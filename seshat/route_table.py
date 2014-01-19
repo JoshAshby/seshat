@@ -21,7 +21,8 @@ class RouteTable(object):
     def __init__(self):
         self._data = {}
         self.codes_to_catch = {
-            "404": None
+            "404": None,
+            "500": None
             }
 
     def append(self, url):
