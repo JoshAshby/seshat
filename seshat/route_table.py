@@ -20,7 +20,9 @@ from head import Head
 class RouteTable(object):
     def __init__(self):
         self._data = {}
-        self.codes_to_catch = {}
+        self.codes_to_catch = {
+            "404": None
+            }
 
     def append(self, url):
         self._data[url.url] = url
@@ -96,20 +98,27 @@ class RouteTable(object):
         return string
 
     def register_error(self, code, controller):
-        self.codes_to_catch[code] = controller
+        self.codes_to_catch[code[:3]] = controller
 
     def check_head(self, head):
         return head.status[:3] in self.codes_to_catch.keys()
 
-    def error(self, code, req):
-        if code in self.codes_to_catch.keys():
-            newHTTPObject = self.codes_to_catch[code]
-            dataThread = gevent.spawn(newHTTPObject._build)
-            dataThread.join()
+    def error(self, head, req):
+      if type(head) is not str:
+          code = head.status
 
-            return dataThread.get()
+      else:
+          code = head
 
-        else:
-            return "Error {}".format(code), Head(code)
+      if self.codes_to_catch[code[:3]]:
+          newHTTPObject = self.codes_to_catch[code[:3]]
+          dataThread = gevent.spawn(newHTTPObject._build)
+          dataThread.join()
+
+          return dataThread.get()
+
+      else:
+          return "Error {}".format(code), Head(code)
+
 
 urls = RouteTable()

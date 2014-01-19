@@ -55,7 +55,10 @@ def dispatch(env, start_response):
         return reply(newHTTPObject, req, start_response)
 
     else:
-        return reply(route_table.error("400", req), req, start_response)
+        content, head = route_table.error("404", req)
+        header = head.generate_header(req, len(content))
+        start_response(head.status, header)
+        return [str(content)]
 
 def reply(newHTTPObject, req, start_response):
     dataThread = gevent.spawn(newHTTPObject._build)
