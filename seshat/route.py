@@ -41,8 +41,10 @@ class AutoURL(object):
             and also a class adminDevBucketsSave which will be routed to
             `/admin/dev/buckets/save/`
         """
+        folder = dispatch.controller_folder+"."
+        folder.replace("/", ".")
         fullModule = pageObject.__module__
-        pre_bits = fullModule.lstrip(dispatch.controller_folder.replace("/", ".")+".")
+        pre_bits = fullModule.lstrip(folder)
         bits = pre_bits.split(".")
         bases = []
 
