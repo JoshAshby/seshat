@@ -16,8 +16,8 @@ joshuaashby@joshashby.com
 
 
 class Head(object):
-    def __init__(self, status="200 OK"):
-        self.headers = []
+    def __init__(self, status="200 OK", headers=None):
+        self.headers = headers or list()
         self.status = status
         self.error = None
 

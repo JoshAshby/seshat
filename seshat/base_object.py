@@ -20,6 +20,7 @@ from head import Head
 
 
 class BaseObject(object):
+    error = None
     """
     Base page response object
     """
