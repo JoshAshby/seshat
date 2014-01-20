@@ -41,8 +41,7 @@ class BaseObject(object):
               self.head = content.head
 
           else:
-              if not content: content = ""
-              if content: content = unicode(content)
+              content = unicode(content)
 
       except Exception:
           self.head.error = str(traceback.format_exc())
