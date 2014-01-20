@@ -58,6 +58,7 @@ def dispatch(env, start_response):
         content, head = route_table.error("404", req)
         header = head.generate_header(req, len(content))
         start_response(head.status, header)
+        log_response(req, head)
         return [str(content)]
 
 def reply(newHTTPObject, req, start_response):
@@ -73,9 +74,9 @@ def reply(newHTTPObject, req, start_response):
 
     start_response(head.status, header)
 
-    del newHTTPObject
+    log_response(req, head)
+
     gevent.spawn(req.log, head)
-    del req
 
     return [str(content)]
 
