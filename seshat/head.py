@@ -17,15 +17,15 @@ joshuaashby@joshashby.com
 
 class Head(object):
     def __init__(self, status="200 OK", headers=None):
-        self.headers = headers or list()
+        self.headers = headers or []
         self.status = status
         self.error = None
 
     def set_header(self, key, value):
-        self.headers  = list(tuple(str(key), str(value)))
+        self.headers  = [(str(key), str(value))]
 
     def add_header(self, key, value):
-        self.headers.append(tuple(str(key), str(value)))
+        self.headers.append((str(key), str(value)))
 
     def generate_header(self, req, length):
         for morsal in req.session_cookie:
