@@ -66,6 +66,7 @@ class FileObject(object):
 
 class BaseRequest(object):
     cookie_name = "sid"
+
     def __init__(self, env):
         self.params = {}
         self.files = {}
@@ -145,16 +146,11 @@ class BaseRequest(object):
         try:
             cookie.load(self._env["HTTP_COOKIE"])
             self.session_cookie = { value.key: value.value for key, value in cookie.iteritems() }
-            self.session_ID = self.sessionCookie[self.cookie_name]
-        except:
+            self.session_ID = self.session_cookie[self.cookie_name]
+        except Exception as e:
+            logger.error(e)
             self.session_ID = str(uuid.uuid4())
             self.session_cookie = {self.cookie_name: self.session_ID}
-
-    def build_session(self):
-        pass
-
-    def build_cfg(self):
-        pass
 
     def get_param(self, param, default="", cast=str):
         try:
@@ -180,6 +176,12 @@ class BaseRequest(object):
             return str(self.id)
         else:
             return "/".join([self.id, self.command])
+
+    def build_session(self):
+        pass
+
+    def build_cfg(self):
+        pass
 
     def log(self, head):
         pass

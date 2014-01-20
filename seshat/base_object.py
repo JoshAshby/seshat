@@ -40,7 +40,7 @@ class BaseObject(object):
           if isinstance(content, actions.BaseAction):
               self.head = content.head
 
-              self.post_content_hook()
+          self.post_content_hook()
 
       except Exception as e:
           self.head.error = (e, str(traceback.format_exc()))
