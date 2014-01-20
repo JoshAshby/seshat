@@ -113,7 +113,7 @@ class RouteTable(object):
           error = code = head
 
       if self.codes_to_catch[code[:3]]:
-          newHTTPObject = self.codes_to_catch[code[:3]]
+          newHTTPObject = self.codes_to_catch[code[:3]](req)
           newHTTPObject.error = error
           dataThread = gevent.spawn(newHTTPObject._build)
           dataThread.join()
