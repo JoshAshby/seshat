@@ -44,6 +44,7 @@ class BaseObject(object):
 
       except Exception as e:
           self.head.error = (e, str(traceback.format_exc()))
+          self.head.status = "500 INTERNAL SERVER ERROR"
 
       return content, self.head
 
