@@ -35,6 +35,6 @@ class Head(object):
         self.headers.append(("Content-Length", str(length)))
         self.headers.append(("Server", req._env["SERVER_SOFTWARE"]))
         self.headers.append(("X-Seshat-Says", "Ello!"))
-        self.headers.append(("X-Error", self.error))
+        self.headers.append(("X-Error", self.error[0]))
 
         return self.headers

@@ -21,9 +21,6 @@ from head import Head
 
 class BaseObject(object):
     error = None
-    """
-    Base page response object
-    """
     def __init__(self, request):
         self.head = Head()
         self.request = request
@@ -34,14 +31,16 @@ class BaseObject(object):
 
     def _build(self):
       content = ""
-      self.pre_content_hook()
       try:
+          c, h = self.pre_content_hook()
+          if c is not None:
+              return c, h
+
           content = getattr(self, self.request.method)()
           if isinstance(content, actions.BaseAction):
               self.head = content.head
 
-          else:
-              content = unicode(content)
+              self.post_content_hook()
 
       except Exception:
           self.head.error = str(traceback.format_exc())
@@ -49,7 +48,7 @@ class BaseObject(object):
       return content, self.head
 
     def pre_content_hook(self):
-        pass
+        return None, None
 
     def post_content_hook(self):
         pass

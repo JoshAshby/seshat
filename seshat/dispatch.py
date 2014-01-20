@@ -99,7 +99,9 @@ def log_obj(req, obj):
     """ % (req.method, req.url.path, obj))
 
 def log_response(req, head):
+    error = head.error[1] if head.error is not None else ""
     logger.debug("""\n\r--------- Response ---------------------
     URL: %s
     Status: %s
-    """ % (req.url.path, head.status))
+    Error: %s
+    """ % (req.url.path, head.status, error))
