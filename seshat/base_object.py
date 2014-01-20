@@ -42,8 +42,8 @@ class BaseObject(object):
 
               self.post_content_hook()
 
-      except Exception:
-          self.head.error = str(traceback.format_exc())
+      except Exception as e:
+          self.head.error = (e, str(traceback.format_exc()))
 
       return content, self.head
 
