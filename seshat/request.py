@@ -23,6 +23,16 @@ import tempfile
 import urlparse
 
 
+def parse_bool(p):
+  if p == "True" or p == "true":
+      return True
+  elif p == "False" or p == "false":
+      return False
+  else:
+      # Well fuck
+      return False
+
+
 class FileObject(object):
     _template = "< FileObject @ {id} Filename: {filename} Data: {data} >"
     def __init__(self, file_obj):
@@ -147,6 +157,7 @@ class BaseRequest(object):
             cookie.load(self._env["HTTP_COOKIE"])
             self.session_cookie = { value.key: value.value for key, value in cookie.iteritems() }
             self.session_ID = self.session_cookie[self.cookie_name]
+
         except Exception as e:
             logger.error(e)
             self.session_ID = str(uuid.uuid4())
@@ -155,13 +166,15 @@ class BaseRequest(object):
     def get_param(self, param, default="", cast=str):
         try:
             p = self.params[param]
-            if cast and cast != str:
+            if cast == "checkbox":
+                p = parse_bool(p)
+
+            elif cast and cast != str:
                 p = cast(p)
+
             else:
-                if p == "True" or p == "true":
-                    p = True
-                elif p == "False" or p == "false":
-                    p = False
+                p = parse_bool(p)
+
             return p
         except:
             return default
@@ -170,10 +183,14 @@ class BaseRequest(object):
         if name in self.files and self.files[name].filename:
               return self.files[name]
 
+        else:
+            return None
+
     @property
     def id_extended(self):
         if self.command is None:
             return str(self.id)
+
         else:
             return "/".join([self.id, self.command])
 
