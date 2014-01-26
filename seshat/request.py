@@ -103,8 +103,8 @@ class BaseRequest(object):
                 q = 1
                 b = bit.split(";")
                 if len(b) > 1:
-                    c = b.split("=")
-                    if c:
+                    c = b[1].split("=")
+                    if len(c) > 1:
                         q = float(c[1].strip(" "))
                 self.remote_accepts.append((b[0], q))
 
