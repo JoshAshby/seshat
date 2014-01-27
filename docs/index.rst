@@ -1,6 +1,8 @@
 Seshat Web Framework v1.0.0
 ===========================
 
+Documentation coming soon!
+
 Build status - Master:
 
 
@@ -13,6 +15,16 @@ Build status - Dev:
 
 .. image:: https://secure.travis-ci.org/JoshAshby/seshat.png?branch=dev
         :target: http://travis-ci.org/JoshAshby/seshat
+
+
+Gittip if you like the work I do and would consider a small donation to help
+fund me and this project:
+
+.. raw:: html
+
+    <iframe style="border: 0; margin: 0; padding: 0;"
+        src="https://www.gittip.com/JoshAshby/widget.html"
+        width="48pt" height="22pt"></iframe>
 
 
 A Few Minor Warnings
