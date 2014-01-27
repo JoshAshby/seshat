@@ -1,5 +1,5 @@
-:mod:`head` Module
---------------------------
+:class:`Head`
+-------------
 
-.. automodule:: seshat.head
+.. autoclass:: seshat.head.Head
     :members:

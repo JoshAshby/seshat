@@ -68,7 +68,14 @@
       <div class="wy-menu wy-menu-vertical" data-spy="affix">
         
         
-            <ul class="simple">
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../controller.html"><tt class="docutils literal"><span class="pre">BaseController</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../route.html"><tt class="docutils literal"><span class="pre">route()</span></tt> Decorator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../head.html"><tt class="docutils literal"><span class="pre">Head</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../actions.html"><tt class="docutils literal"><span class="pre">actions</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../request.html"><tt class="docutils literal"><span class="pre">BaseRequest</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../route_table.html"><tt class="docutils literal"><span class="pre">RouteTable</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dispatch.html"><tt class="docutils literal"><span class="pre">dispatch</span></tt> Module</a></li>
 </ul>
 
         
@@ -99,9 +106,24 @@
   <h1>Source code for seshat.actions</h1><div class="highlight"><pre>
 <span class="c">#!/usr/bin/env python</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">various actions to return from an object.</span>
+<span class="sd">Actions allow you to write code that looks like::</span>
 
-<span class="sd">For more information, see: https://github.com/JoshAshby/</span>
+<span class="sd">    class RandomController(BaseController):</span>
+<span class="sd">      def GET(self):</span>
+<span class="sd">        return Redirect(&quot;/&quot;)</span>
+
+<span class="sd">which I think looks a lot nicer than::</span>
+
+<span class="sd">    class RandomController(BaseController):</span>
+<span class="sd">      def GET(self):</span>
+<span class="sd">        self.head.status = &quot;303 SEE OTHER&quot;</span>
+<span class="sd">        self.head.append(&quot;location&quot;, &quot;/&quot;)</span>
+
+<span class="sd">This module provides a few common Action classes to use, along with a</span>
+<span class="sd">BaseAction which can be inherited to create your own Actions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">For more information and licensing, see: https://github.com/JoshAshby/seshat</span>
 
 <span class="sd">http://xkcd.com/353/</span>
 
@@ -126,7 +148,7 @@
 <span class="sd">    which will cause the controller to return a 404 status code.</span>
 
 <span class="sd">    To create a new action, inherit this class then make a new `__init__(self, *kargs)`</span>
-<span class="sd">    which sets `self.head` to a `seshat.head.Head` object.</span>
+<span class="sd">    which sets `self.head` to a :py:class:`.Head` object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">head</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -141,20 +163,17 @@
 </div>
 <div class="viewcode-block" id="Redirect"><a class="viewcode-back" href="../../actions.html#seshat.actions.Redirect">[docs]</a><span class="k">class</span> <span class="nc">Redirect</span><span class="p">(</span><span class="n">BaseAction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Causes the controller which returns this to send a 303 See Other status</span>
-<span class="sd">    code back to the client.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Redirect.__init__"><a class="viewcode-back" href="../../actions.html#seshat.actions.Redirect.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the location of where the client should be redirected to</span>
+<span class="sd">    Returns a 303 See Other status code along with a `location` header back</span>
+<span class="sd">    to the client.</span>
 
-<span class="sd">        :param loc: The location to which the client should be redirect to</span>
-<span class="sd">        :type loc: str</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    :param loc: The location to which the client should be redirect to</span>
+<span class="sd">    :type loc: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">Head</span><span class="p">(</span><span class="s">&quot;303 SEE OTHER&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&quot;Location&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="p">)</span>
 
-</div></div>
+</div>
 <div class="viewcode-block" id="NotFound"><a class="viewcode-back" href="../../actions.html#seshat.actions.NotFound">[docs]</a><span class="k">class</span> <span class="nc">NotFound</span><span class="p">(</span><span class="n">BaseAction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a 404 Not Found code and the resulting 404 error controller to be</span>
@@ -178,7 +197,7 @@
   <hr/>
 
   <p>
-      &copy; Copyright 2013, Joshua P Ashby.
+      &copy; Copyright 2014, Joshua P Ashby.
   </p>
 
   <a href="https://www.github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="http://readthedocs.org">Read the Docs</a>

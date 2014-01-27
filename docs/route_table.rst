@@ -1,5 +1,5 @@
-:mod:`route_table` Module
---------------------------
+:class:`RouteTable`
+-------------------
 
-.. automodule:: seshat.route_table
+.. autoclass:: seshat.route_table.RouteTable
     :members:

@@ -1,5 +1,4 @@
-:mod:`route` Module
---------------------------
+:func:`route` Decorator
+-----------------------
 
-.. automodule:: seshat.route
-    :members:
+.. autofunction:: seshat.route.route

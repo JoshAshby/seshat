@@ -1,8 +1,23 @@
 #!/usr/bin/env python
 """
-various actions to return from an object.
+Actions allow you to write code that looks like::
 
-For more information, see: https://github.com/JoshAshby/
+    class RandomController(BaseController):
+      def GET(self):
+        return Redirect("/")
+
+which I think looks a lot nicer than::
+
+    class RandomController(BaseController):
+      def GET(self):
+        self.head.status = "303 SEE OTHER"
+        self.head.append("location", "/")
+
+This module provides a few common Action classes to use, along with a
+BaseAction which can be inherited to create your own Actions.
+"""
+"""
+For more information and licensing, see: https://github.com/JoshAshby/seshat
 
 http://xkcd.com/353/
 
@@ -27,7 +42,7 @@ class BaseAction(object):
     which will cause the controller to return a 404 status code.
 
     To create a new action, inherit this class then make a new `__init__(self, *kargs)`
-    which sets `self.head` to a `seshat.head.Head` object.
+    which sets `self.head` to a :py:class:`.Head` object.
     """
     head = None
     def __len__(self):
@@ -42,16 +57,13 @@ class BaseAction(object):
 
 class Redirect(BaseAction):
     """
-    Causes the controller which returns this to send a 303 See Other status
-    code back to the client.
+    Returns a 303 See Other status code along with a `location` header back
+    to the client.
+
+    :param loc: The location to which the client should be redirect to
+    :type loc: str
     """
     def __init__(self, loc):
-        """
-        Sets the location of where the client should be redirected to
-
-        :param loc: The location to which the client should be redirect to
-        :type loc: str
-        """
         self.head = Head("303 SEE OTHER")
         self.head.add_header("Location", loc)
 

@@ -1,5 +1,5 @@
-:mod:`actions` Module
---------------------------
+:mod:`actions`
+--------------
 
 .. automodule:: seshat.actions
     :members:

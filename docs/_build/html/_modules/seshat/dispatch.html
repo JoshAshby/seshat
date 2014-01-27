@@ -68,7 +68,14 @@
       <div class="wy-menu wy-menu-vertical" data-spy="affix">
         
         
-            <ul class="simple">
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../controller.html"><tt class="docutils literal"><span class="pre">BaseController</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../route.html"><tt class="docutils literal"><span class="pre">route()</span></tt> Decorator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../head.html"><tt class="docutils literal"><span class="pre">Head</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../actions.html"><tt class="docutils literal"><span class="pre">actions</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../request.html"><tt class="docutils literal"><span class="pre">BaseRequest</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../route_table.html"><tt class="docutils literal"><span class="pre">RouteTable</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dispatch.html"><tt class="docutils literal"><span class="pre">dispatch</span></tt> Module</a></li>
 </ul>
 
         
@@ -99,11 +106,10 @@
   <h1>Source code for seshat.dispatch</h1><div class="highlight"><pre>
 <span class="c">#!/usr/bin/env python</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Seshat</span>
-<span class="sd">Web App/API framework built on top of gevent</span>
-<span class="sd">Main framework app</span>
-
-<span class="sd">For more information, see: https://github.com/JoshAshby/</span>
+<span class="sd">TODO: Doc this.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">For more information and licensing, see: https://github.com/JoshAshby/seshat</span>
 
 <span class="sd">http://xkcd.com/353/</span>
 
@@ -140,6 +146,9 @@
 <span class="sd">        from waitress import serve</span>
 <span class="sd">        serve(dispatch)</span>
 
+<span class="sd">    if you want to see the logs, provide a :py:mod:`logging` handler for</span>
+<span class="sd">      `seshat`</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">req</span> <span class="o">=</span> <span class="n">request_obj</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
     <span class="n">newHTTPObject</span> <span class="o">=</span> <span class="bp">None</span>
@@ -159,6 +168,7 @@
         <span class="n">start_response</span><span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">header</span><span class="p">)</span>
         <span class="n">log_response</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">head</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">content</span><span class="p">)]</span>
+
 </div>
 <span class="k">def</span> <span class="nf">reply</span><span class="p">(</span><span class="n">newHTTPObject</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
     <span class="n">dataThread</span> <span class="o">=</span> <span class="n">gevent</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="n">newHTTPObject</span><span class="o">.</span><span class="n">_build</span><span class="p">)</span>
@@ -179,6 +189,7 @@
 
     <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">content</span><span class="p">)]</span>
 
+
 <span class="k">def</span> <span class="nf">log_request</span><span class="p">(</span><span class="n">req</span><span class="p">):</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&quot;&quot;</span><span class="se">\n\r</span><span class="s">------- Request ---------------------</span>
 <span class="s">    Method: </span><span class="si">%s</span><span class="s"></span>
@@ -190,12 +201,14 @@
 <span class="s">    R: </span><span class="si">%s</span><span class="s"></span>
 <span class="s">    &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">files</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">remote</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">user_agent</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">referer</span><span class="p">))</span>
 
+
 <span class="k">def</span> <span class="nf">log_obj</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&quot;&quot;</span><span class="se">\n\r</span><span class="s">------- Processing ------------------</span>
 <span class="s">    Method: </span><span class="si">%s</span><span class="s"></span>
 <span class="s">    URL: </span><span class="si">%s</span><span class="s"></span>
 <span class="s">    Object: </span><span class="si">%s</span><span class="s"></span>
 <span class="s">    &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">obj</span><span class="p">))</span>
+
 
 <span class="k">def</span> <span class="nf">log_response</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">head</span><span class="p">):</span>
     <span class="n">error</span> <span class="o">=</span> <span class="n">head</span><span class="o">.</span><span class="n">error</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">head</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="s">&quot;&quot;</span>
@@ -212,7 +225,7 @@
   <hr/>
 
   <p>
-      &copy; Copyright 2013, Joshua P Ashby.
+      &copy; Copyright 2014, Joshua P Ashby.
   </p>
 
   <a href="https://www.github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="http://readthedocs.org">Read the Docs</a>

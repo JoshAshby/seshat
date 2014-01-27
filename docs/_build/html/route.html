@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>route Module &mdash; Seshat 1.0.0 documentation</title>
+  <title>route() Decorator &mdash; Seshat 1.0.0 documentation</title>
   
 
   
@@ -43,7 +43,9 @@
   
 
   
-    <link rel="top" title="Seshat 1.0.0 documentation" href="index.html"/> 
+    <link rel="top" title="Seshat 1.0.0 documentation" href="index.html"/>
+        <link rel="next" title="RouteTable" href="route_table.html"/>
+        <link rel="prev" title="BaseRequest" href="request.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
@@ -67,7 +69,14 @@
       <div class="wy-menu wy-menu-vertical" data-spy="affix">
         
         
-            <ul class="simple">
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="actions.html"><tt class="docutils literal"><span class="pre">actions</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="base_object.html"><tt class="docutils literal"><span class="pre">BaseObject</span></tt> Base Controller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="head.html"><tt class="docutils literal"><span class="pre">Head</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="request.html"><tt class="docutils literal"><span class="pre">BaseRequest</span></tt></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href=""><tt class="docutils literal"><span class="pre">route()</span></tt> Decorator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="route_table.html"><tt class="docutils literal"><span class="pre">RouteTable</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="dispatch.html"><tt class="docutils literal"><span class="pre">dispatch</span></tt> Module</a></li>
 </ul>
 
         
@@ -89,30 +98,14 @@
         <div class="rst-content">
           <ul class="wy-breadcrumbs">
   <li><a href="index.html">Docs</a> &raquo;</li>
-  <li><a href=""><tt class="docutils literal"><span class="pre">route</span></tt> Module</a></li>
+  <li><a href=""><tt class="docutils literal"><span class="pre">route()</span></tt> Decorator</a></li>
   
 </ul>
 <hr/>
 
           
-  <div class="section" id="module-seshat.route">
-<span id="route-module"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">route</span></tt> Module<a class="headerlink" href="#module-seshat.route" title="Permalink to this headline">¶</a></h1>
-<p>Seshat
-Web App/API framework built on top of gevent
-routing decorator</p>
-<p>For more information, see: <a class="reference external" href="https://github.com/JoshAshby/">https://github.com/JoshAshby/</a></p>
-<p><a class="reference external" href="http://xkcd.com/353/">http://xkcd.com/353/</a></p>
-<p>Josh Ashby
-2014
-<a class="reference external" href="http://joshashby.com">http://joshashby.com</a>
-<a class="reference external" href="mailto:joshuaashby&#37;&#52;&#48;joshashby&#46;com">joshuaashby<span>&#64;</span>joshashby<span>&#46;</span>com</a></p>
-<dl class="class">
-<dt id="seshat.route.AutoURL">
-<em class="property">class </em><tt class="descclassname">seshat.route.</tt><tt class="descname">AutoURL</tt><big>(</big><em>pageObject</em><big>)</big><a class="reference internal" href="_modules/seshat/route.html#AutoURL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seshat.route.AutoURL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base container and for generating and storing the url,  and controller
-class in the route table.</p>
-</dd></dl>
-
+  <div class="section" id="route-decorator">
+<h1><tt class="xref py py-func docutils literal"><span class="pre">route()</span></tt> Decorator<a class="headerlink" href="#route-decorator" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="seshat.route.route">
 <tt class="descclassname">seshat.route.</tt><tt class="descname">route</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/seshat/route.html#route"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seshat.route.route" title="Permalink to this definition">¶</a></dt>
@@ -134,11 +127,20 @@ decorated controller class, based off of its name and its file hierarchy</p>
 
           <footer>
   
+    <div class="rst-footer-buttons">
+      
+        <a href="route_table.html" class="btn btn-neutral float-right" title="RouteTable"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="request.html" class="btn btn-neutral" title="BaseRequest"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
 
   <hr/>
 
   <p>
-      &copy; Copyright 2013, Joshua P Ashby.
+      &copy; Copyright 2014, Joshua P Ashby.
   </p>
 
   <a href="https://www.github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="http://readthedocs.org">Read the Docs</a>

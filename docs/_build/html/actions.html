@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>actions Module &mdash; Seshat 1.0.0 documentation</title>
+  <title>actions &mdash; Seshat 1.0.0 documentation</title>
   
 
   
@@ -43,7 +43,9 @@
   
 
   
-    <link rel="top" title="Seshat 1.0.0 documentation" href="index.html"/> 
+    <link rel="top" title="Seshat 1.0.0 documentation" href="index.html"/>
+        <link rel="next" title="BaseRequest" href="request.html"/>
+        <link rel="prev" title="Head" href="head.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
@@ -67,7 +69,14 @@
       <div class="wy-menu wy-menu-vertical" data-spy="affix">
         
         
-            <ul class="simple">
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="controller.html"><tt class="docutils literal"><span class="pre">BaseController</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="route.html"><tt class="docutils literal"><span class="pre">route()</span></tt> Decorator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="head.html"><tt class="docutils literal"><span class="pre">Head</span></tt></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href=""><tt class="docutils literal"><span class="pre">actions</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="request.html"><tt class="docutils literal"><span class="pre">BaseRequest</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="route_table.html"><tt class="docutils literal"><span class="pre">RouteTable</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="dispatch.html"><tt class="docutils literal"><span class="pre">dispatch</span></tt> Module</a></li>
 </ul>
 
         
@@ -89,21 +98,29 @@
         <div class="rst-content">
           <ul class="wy-breadcrumbs">
   <li><a href="index.html">Docs</a> &raquo;</li>
-  <li><a href=""><tt class="docutils literal"><span class="pre">actions</span></tt> Module</a></li>
+  <li><a href=""><tt class="docutils literal"><span class="pre">actions</span></tt></a></li>
   
 </ul>
 <hr/>
 
           
   <div class="section" id="module-seshat.actions">
-<span id="actions-module"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">actions</span></tt> Module<a class="headerlink" href="#module-seshat.actions" title="Permalink to this headline">¶</a></h1>
-<p>various actions to return from an object.</p>
-<p>For more information, see: <a class="reference external" href="https://github.com/JoshAshby/">https://github.com/JoshAshby/</a></p>
-<p><a class="reference external" href="http://xkcd.com/353/">http://xkcd.com/353/</a></p>
-<p>Josh Ashby
-2014
-<a class="reference external" href="http://joshashby.com">http://joshashby.com</a>
-<a class="reference external" href="mailto:joshuaashby&#37;&#52;&#48;joshashby&#46;com">joshuaashby<span>&#64;</span>joshashby<span>&#46;</span>com</a></p>
+<span id="actions"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">actions</span></tt><a class="headerlink" href="#module-seshat.actions" title="Permalink to this headline">¶</a></h1>
+<p>Actions allow you to write code that looks like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">RandomController</span><span class="p">(</span><span class="n">BaseController</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Redirect</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>which I think looks a lot nicer than:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">RandomController</span><span class="p">(</span><span class="n">BaseController</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&quot;303 SEE OTHER&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;location&quot;</span><span class="p">,</span> <span class="s">&quot;/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This module provides a few common Action classes to use, along with a
+BaseAction which can be inherited to create your own Actions.</p>
 <dl class="class">
 <dt id="seshat.actions.BaseAction">
 <em class="property">class </em><tt class="descclassname">seshat.actions.</tt><tt class="descname">BaseAction</tt><a class="reference internal" href="_modules/seshat/actions.html#BaseAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seshat.actions.BaseAction" title="Permalink to this definition">¶</a></dt>
@@ -116,14 +133,22 @@ for a syntax like:</p>
 </div>
 <p>which will cause the controller to return a 404 status code.</p>
 <p>To create a new action, inherit this class then make a new <cite>__init__(self, *kargs)</cite>
-which sets <cite>self.head</cite> to a <cite>seshat.head.Head</cite> object.</p>
+which sets <cite>self.head</cite> to a <a class="reference internal" href="head.html#seshat.head.Head" title="seshat.head.Head"><tt class="xref py py-class docutils literal"><span class="pre">Head</span></tt></a> object.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="seshat.actions.Redirect">
 <em class="property">class </em><tt class="descclassname">seshat.actions.</tt><tt class="descname">Redirect</tt><big>(</big><em>loc</em><big>)</big><a class="reference internal" href="_modules/seshat/actions.html#Redirect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seshat.actions.Redirect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Causes the controller which returns this to send a 303 See Other status
-code back to the client.</p>
+<dd><p>Returns a 303 See Other status code along with a <cite>location</cite> header back
+to the client.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>loc</strong> (<em>str</em>) &#8211; The location to which the client should be redirect to</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
@@ -144,11 +169,20 @@ returned to the client.</p>
 
           <footer>
   
+    <div class="rst-footer-buttons">
+      
+        <a href="request.html" class="btn btn-neutral float-right" title="BaseRequest"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="head.html" class="btn btn-neutral" title="Head"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
 
   <hr/>
 
   <p>
-      &copy; Copyright 2013, Joshua P Ashby.
+      &copy; Copyright 2014, Joshua P Ashby.
   </p>
 
   <a href="https://www.github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="http://readthedocs.org">Read the Docs</a>

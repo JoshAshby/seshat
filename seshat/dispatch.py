@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 """
-Seshat
-Web App/API framework built on top of gevent
-Main framework app
-
-For more information, see: https://github.com/JoshAshby/
+TODO: Doc this.
+"""
+"""
+For more information and licensing, see: https://github.com/JoshAshby/seshat
 
 http://xkcd.com/353/
 
@@ -41,6 +40,9 @@ def dispatch(env, start_response):
         from waitress import serve
         serve(dispatch)
 
+    if you want to see the logs, provide a :py:mod:`logging` handler for
+      `seshat`
+
     """
     req = request_obj(env)
     newHTTPObject = None
@@ -61,6 +63,7 @@ def dispatch(env, start_response):
         log_response(req, head)
         return [str(content)]
 
+
 def reply(newHTTPObject, req, start_response):
     dataThread = gevent.spawn(newHTTPObject._build)
     dataThread.join()
@@ -80,6 +83,7 @@ def reply(newHTTPObject, req, start_response):
 
     return [str(content)]
 
+
 def log_request(req):
     logger.debug("""\n\r------- Request ---------------------
     Method: %s
@@ -91,12 +95,14 @@ def log_request(req):
     R: %s
     """ % (req.method, req.url.path, req.params, req.files, req.remote, req.user_agent, req.referer))
 
+
 def log_obj(req, obj):
     logger.debug("""\n\r------- Processing ------------------
     Method: %s
     URL: %s
     Object: %s
     """ % (req.method, req.url.path, obj))
+
 
 def log_response(req, head):
     error = head.error[1] if head.error is not None else ""

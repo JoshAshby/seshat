@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>head Module &mdash; Seshat 1.0.0 documentation</title>
+  <title>Head &mdash; Seshat 1.0.0 documentation</title>
   
 
   
@@ -43,7 +43,9 @@
   
 
   
-    <link rel="top" title="Seshat 1.0.0 documentation" href="index.html"/> 
+    <link rel="top" title="Seshat 1.0.0 documentation" href="index.html"/>
+        <link rel="next" title="BaseRequest" href="request.html"/>
+        <link rel="prev" title="BaseObject Base Controller" href="base_object.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
@@ -67,7 +69,14 @@
       <div class="wy-menu wy-menu-vertical" data-spy="affix">
         
         
-            <ul class="simple">
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="actions.html"><tt class="docutils literal"><span class="pre">actions</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="base_object.html"><tt class="docutils literal"><span class="pre">BaseObject</span></tt> Base Controller</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href=""><tt class="docutils literal"><span class="pre">Head</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="request.html"><tt class="docutils literal"><span class="pre">BaseRequest</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="route.html"><tt class="docutils literal"><span class="pre">route()</span></tt> Decorator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="route_table.html"><tt class="docutils literal"><span class="pre">RouteTable</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="dispatch.html"><tt class="docutils literal"><span class="pre">dispatch</span></tt> Module</a></li>
 </ul>
 
         
@@ -89,33 +98,39 @@
         <div class="rst-content">
           <ul class="wy-breadcrumbs">
   <li><a href="index.html">Docs</a> &raquo;</li>
-  <li><a href=""><tt class="docutils literal"><span class="pre">head</span></tt> Module</a></li>
+  <li><a href=""><tt class="docutils literal"><span class="pre">Head</span></tt></a></li>
   
 </ul>
 <hr/>
 
           
-  <div class="section" id="module-seshat.head">
-<span id="head-module"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">head</span></tt> Module<a class="headerlink" href="#module-seshat.head" title="Permalink to this headline">¶</a></h1>
-<p>Seshat
-Web App/API framework built on top of gevent
-baseObject to build pages off of</p>
-<p>For more information, see: <a class="reference external" href="https://github.com/JoshAshby/">https://github.com/JoshAshby/</a></p>
-<p><a class="reference external" href="http://xkcd.com/353/">http://xkcd.com/353/</a></p>
-<p>Josh Ashby
-2014
-<a class="reference external" href="http://joshashby.com">http://joshashby.com</a>
-<a class="reference external" href="mailto:joshuaashby&#37;&#52;&#48;joshashby&#46;com">joshuaashby<span>&#64;</span>joshashby<span>&#46;</span>com</a></p>
+  <div class="section" id="head">
+<h1><tt class="xref py py-class docutils literal"><span class="pre">Head</span></tt><a class="headerlink" href="#head" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="seshat.head.Head">
+<em class="property">class </em><tt class="descclassname">seshat.head.</tt><tt class="descname">Head</tt><big>(</big><em>status='200 OK'</em>, <em>headers=None</em><big>)</big><a class="reference internal" href="_modules/seshat/head.html#Head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seshat.head.Head" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives a basic container for the headers within a request.</p>
+</dd></dl>
+
 </div>
 
 
           <footer>
   
+    <div class="rst-footer-buttons">
+      
+        <a href="request.html" class="btn btn-neutral float-right" title="BaseRequest"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="base_object.html" class="btn btn-neutral" title="BaseObject Base Controller"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
 
   <hr/>
 
   <p>
-      &copy; Copyright 2013, Joshua P Ashby.
+      &copy; Copyright 2014, Joshua P Ashby.
   </p>
 
   <a href="https://www.github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="http://readthedocs.org">Read the Docs</a>

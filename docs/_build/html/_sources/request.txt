@@ -1,5 +1,5 @@
-:mod:`request` Module
---------------------------
+:class:`BaseRequest`
+--------------------
 
-.. automodule:: seshat.request
+.. autoclass:: seshat.request.BaseRequest
     :members:

@@ -1,0 +1,256 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>seshat.route_table &mdash; Seshat 1.0.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:'../../',
+        VERSION:'1.0.0',
+        COLLAPSE_INDEX:false,
+        FILE_SUFFIX:'.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+    <link rel="top" title="Seshat 1.0.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="icon icon-home"> Seshat</a>
+        <form class="wy-form" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search docs" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../controller.html"><tt class="docutils literal"><span class="pre">BaseController</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../route.html"><tt class="docutils literal"><span class="pre">route()</span></tt> Decorator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../head.html"><tt class="docutils literal"><span class="pre">Head</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../actions.html"><tt class="docutils literal"><span class="pre">actions</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../request.html"><tt class="docutils literal"><span class="pre">BaseRequest</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../route_table.html"><tt class="docutils literal"><span class="pre">RouteTable</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dispatch.html"><tt class="docutils literal"><span class="pre">dispatch</span></tt> Module</a></li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top">
+        <i data-toggle="wy-nav-top" class="icon icon-reorder"></i>
+        <a href="/">Seshat</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <ul class="wy-breadcrumbs">
+  <li><a href="../../index.html">Docs</a> &raquo;</li>
+  <li><a href="">seshat.route_table</a></li>
+  
+</ul>
+<hr/>
+
+          
+  <h1>Source code for seshat.route_table</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Seshat</span>
+<span class="sd">Web App/API framework built on top of gevent</span>
+<span class="sd">route table</span>
+
+<span class="sd">For more information, see: https://github.com/JoshAshby/</span>
+
+<span class="sd">http://xkcd.com/353/</span>
+
+<span class="sd">Josh Ashby</span>
+<span class="sd">2014</span>
+<span class="sd">http://joshashby.com</span>
+<span class="sd">joshuaashby@joshashby.com</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">gevent</span>
+<span class="kn">from</span> <span class="nn">head</span> <span class="kn">import</span> <span class="n">Head</span>
+
+
+<div class="viewcode-block" id="RouteTable"><a class="viewcode-back" href="../../route_table.html#seshat.route_table.RouteTable">[docs]</a><span class="k">class</span> <span class="nc">RouteTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">codes_to_catch</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&quot;404&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+            <span class="s">&quot;500&quot;</span><span class="p">:</span> <span class="bp">None</span>
+            <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">url</span><span class="o">.</span><span class="n">url</span><span class="p">]</span> <span class="o">=</span> <span class="n">url</span>
+
+<div class="viewcode-block" id="RouteTable.get"><a class="viewcode-back" href="../../route_table.html#seshat.route_table.RouteTable.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Attempts to find the closest match to the given url.</span>
+<span class="sd">        Its messy but it gets the job done. mostly well. not sure on</span>
+<span class="sd">        the amount of processing time it has or hasn&#39;t saved however,</span>
+<span class="sd">        but it doesn&#39;t use regex... :/</span>
+
+<span class="sd">        :parsed_url: urlparse.ParseResult</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">url</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">extended</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">orig_path</span> <span class="o">=</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">orig_path</span><span class="p">:</span>
+            <span class="n">base</span> <span class="o">=</span> <span class="s">&quot;/&quot;</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">orig_path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">orig_path</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">orig_path</span>
+                <span class="k">while</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                    <span class="n">path_parts</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">base</span> <span class="o">=</span> <span class="n">path_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">base</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+                        <span class="n">found</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="n">extended</span> <span class="o">=</span> <span class="n">orig_path</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">base</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">path</span> <span class="o">=</span> <span class="n">path_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span>
+                            <span class="n">base</span> <span class="o">=</span> <span class="bp">None</span>
+                            <span class="n">found</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">post_route</span><span class="p">(</span><span class="n">extended</span><span class="p">)</span>
+
+            <span class="n">name</span> <span class="o">=</span> <span class="n">base</span>
+
+            <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">command</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="s">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">base</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">command</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">tmp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">tmp</span>
+            <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="s">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">base</span><span class="p">,</span> <span class="s">&quot;view&quot;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">tmp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">tmp</span>
+
+            <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">pageObject</span>
+
+        <span class="k">return</span> <span class="n">obj</span>
+</div>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">routes</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="n">routes_template</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">{key}:</span><span class="se">\n\t\t</span><span class="s">{value}</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="k">for</span> <span class="n">route</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+            <span class="n">route</span> <span class="o">=</span> <span class="n">routes_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">route</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">route</span><span class="p">])</span>
+            <span class="n">routes</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">routes</span><span class="p">,</span> <span class="n">route</span><span class="p">])</span>
+
+        <span class="n">string</span> <span class="o">=</span> <span class="s">&quot;&lt; RouteTable @ {id} Table:</span><span class="se">\n</span><span class="s">{table}</span><span class="se">\n</span><span class="s"> &gt;&quot;</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="p">{</span>
+            <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+            <span class="s">&quot;table&quot;</span><span class="p">:</span> <span class="n">routes</span>
+          <span class="p">})</span>
+
+        <span class="k">return</span> <span class="n">string</span>
+
+    <span class="k">def</span> <span class="nf">register_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">controller</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">codes_to_catch</span><span class="p">[</span><span class="n">code</span><span class="p">[:</span><span class="mi">3</span><span class="p">]]</span> <span class="o">=</span> <span class="n">controller</span>
+
+    <span class="k">def</span> <span class="nf">check_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">head</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">head</span><span class="o">.</span><span class="n">status</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">codes_to_catch</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">head</span><span class="p">,</span> <span class="n">req</span><span class="p">):</span>
+      <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">head</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">:</span>
+          <span class="n">code</span> <span class="o">=</span> <span class="n">head</span><span class="o">.</span><span class="n">status</span>
+          <span class="n">error</span> <span class="o">=</span> <span class="n">head</span><span class="o">.</span><span class="n">error</span>
+
+      <span class="k">else</span><span class="p">:</span>
+          <span class="n">error</span> <span class="o">=</span> <span class="n">code</span> <span class="o">=</span> <span class="n">head</span>
+
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">codes_to_catch</span><span class="p">[</span><span class="n">code</span><span class="p">[:</span><span class="mi">3</span><span class="p">]]:</span>
+          <span class="n">newHTTPObject</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">codes_to_catch</span><span class="p">[</span><span class="n">code</span><span class="p">[:</span><span class="mi">3</span><span class="p">]](</span><span class="n">req</span><span class="p">)</span>
+          <span class="n">newHTTPObject</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">error</span>
+          <span class="n">dataThread</span> <span class="o">=</span> <span class="n">gevent</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="n">newHTTPObject</span><span class="o">.</span><span class="n">_build</span><span class="p">)</span>
+          <span class="n">dataThread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+          <span class="k">return</span> <span class="n">dataThread</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+      <span class="k">else</span><span class="p">:</span>
+          <span class="k">return</span> <span class="s">&quot;Error {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">code</span><span class="p">),</span> <span class="n">Head</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+
+</div>
+<span class="n">urls</span> <span class="o">=</span> <span class="n">RouteTable</span><span class="p">()</span>
+</pre></div>
+
+          <footer>
+  
+
+  <hr/>
+
+  <p>
+      &copy; Copyright 2014, Joshua P Ashby.
+  </p>
+
+  <a href="https://www.github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="http://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+</body>
+</html>

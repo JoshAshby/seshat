@@ -16,6 +16,9 @@ joshuaashby@joshashby.com
 
 
 class Head(object):
+    """
+    Gives a basic container for the headers within a request.
+    """
     def __init__(self, status="200 OK", headers=None):
         self.headers = headers or []
         self.status = status

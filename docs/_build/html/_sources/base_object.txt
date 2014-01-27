@@ -1,5 +1,5 @@
-:mod:`base_object` Module
---------------------------
+:class:`BaseObject` Base Controller
+-----------------------------------
 
-.. automodule:: seshat.base_object
+.. autoclass:: seshat.base_object.BaseObject
     :members:

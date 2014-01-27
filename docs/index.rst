@@ -1,7 +1,9 @@
 Seshat Web Framework v1.0.0
 ===========================
 
-Documentation coming soon!
+Seshat is a toy web framework built by JoshAshby over the past few years. It's
+aimed at being somewhat opinionated, and most definetly full of bad practices
+but it gets the job done with running a few smaller sites.
 
 Build status - Master:
 
@@ -20,11 +22,13 @@ Build status - Dev:
 Gittip if you like the work I do and would consider a small donation to help
 fund me and this project:
 
+
 .. raw:: html
 
     <iframe style="border: 0; margin: 0; padding: 0;"
         src="https://www.gittip.com/JoshAshby/widget.html"
         width="48pt" height="22pt"></iframe>
+
 
 
 A Few Minor Warnings
@@ -62,6 +66,14 @@ Doc Contents
 
 .. toctree::
    :maxdepth: 4
+
+   controller
+   route
+   head
+   actions
+   request
+   route_table
+   dispatch
 
 
 Indices and tables
