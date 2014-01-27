@@ -168,14 +168,11 @@ class BaseRequest(object):
     def get_param(self, param, default="", cast=str):
         try:
             p = self.params[param]
-            if cast == "checkbox":
-                p = parse_bool(p)
-
-            elif cast and cast != str:
-                p = cast(p)
-
-            else:
-                p = parse_bool(p)
+            if cast and cast != str:
+                if cast == bool:
+                    p = parse_bool(p)
+                else:
+                    p = cast(p)
 
             return p
         except:
