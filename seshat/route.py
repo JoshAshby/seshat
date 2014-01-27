@@ -22,24 +22,13 @@ logger = logging.getLogger("seshat.route")
 
 class AutoURL(object):
     """
-    Base container and for generating and storing the url, and regex
-    along with the object for the route table.
+    Base container and for generating and storing the url,  and controller
+    class in the route table.
     """
     def __init__(self, pageObject):
         """
         Attempts to generate the base URL from the module name. This uses
         the file hierarchy within the controllers file to represent the URL.
-        Controller files must contain the word `Controller` and the folder names
-        can not. The actual name of the class within each Controller must be
-        the camel case of the files, followed by the actual page name.  
-
-        eg:
-            controllers/admin/dev/buckets/bucketsController.py
-
-            contains a class adminDevBucketsIndex which will be routed to
-            `/admin/dev/buckets`
-            and also a class adminDevBucketsSave which will be routed to
-            `/admin/dev/buckets/save/`
         """
         fullModule = pageObject.__module__
 
@@ -92,6 +81,15 @@ def route():
     """
     Class decorator that will take and generate a route table entry for the
     decorated controller class, based off of its name and its file hierarchy
+
+    Use like so::
+
+        from seshat.base_object import BaseObject
+        from seshat.route import route
+
+        @route()
+        class ControllerAndPageName(BaseObject):
+            pass
     """
     def wrapper(HTTPObject):
         urlObject = AutoURL(HTTPObject)

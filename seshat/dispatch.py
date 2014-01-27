@@ -22,25 +22,25 @@ from request import BaseRequest
 logger = logging.getLogger("seshat.dispatch")
 
 request_obj = BaseRequest
+"""The object which should be used to create a new Request item from. Should
+inherit from BaseRequest"""
 controller_folder = ""
+"""The folder where the controllers are located in. Since the auto route
+generation uses folder hierarchy, this setting allows to you to have
+controllers in a single folder but not have that folder end up as the route
+prefix."""
 
 
 def dispatch(env, start_response):
     """
     WSGI dispatcher
 
-    Start off by making the global request object that gets passed around from
-    this dispatcher to the controllers to the templater, the request object
-    contains all the base logic to pull out the URL request parameters, build
-    the session and gather the configuration bucket. It also contains logic for
-    building the final header that is returned to the browser when a request is
-    finished.
+    This represents the main WSGI app for Seshat.
+    To use with `waitress`, for example::
 
-    After this request object has been initialized, we then go through and try
-    to find a match in the global urls dictionary which contains key values of
-    the regex as the key and the object to route a match on that regex to as
-    the value. From there it's either processing and returning the data from
-    that controller object or it's returning a 404 or 500 error page.
+        from waitress import serve
+        serve(dispatch)
+
     """
     req = request_obj(env)
     newHTTPObject = None

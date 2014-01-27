@@ -55,9 +55,7 @@ class BaseObject(object):
         pass
 
     def HEAD(self):
-        """
-        This is wrong since it should only return the headers... technically...
-        """
+        # This is wrong since it should only return the headers... technically...
         return self.GET()
 
     def GET(self):

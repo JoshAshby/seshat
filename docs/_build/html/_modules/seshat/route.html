@@ -1,0 +1,224 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>seshat.route &mdash; Seshat 1.0.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:'../../',
+        VERSION:'1.0.0',
+        COLLAPSE_INDEX:false,
+        FILE_SUFFIX:'.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+    <link rel="top" title="Seshat 1.0.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="icon icon-home"> Seshat</a>
+        <form class="wy-form" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search docs" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix">
+        
+        
+            <ul class="simple">
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top">
+        <i data-toggle="wy-nav-top" class="icon icon-reorder"></i>
+        <a href="/">Seshat</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <ul class="wy-breadcrumbs">
+  <li><a href="../../index.html">Docs</a> &raquo;</li>
+  <li><a href="">seshat.route</a></li>
+  
+</ul>
+<hr/>
+
+          
+  <h1>Source code for seshat.route</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Seshat</span>
+<span class="sd">Web App/API framework built on top of gevent</span>
+<span class="sd">routing decorator</span>
+
+<span class="sd">For more information, see: https://github.com/JoshAshby/</span>
+
+<span class="sd">http://xkcd.com/353/</span>
+
+<span class="sd">Josh Ashby</span>
+<span class="sd">2014</span>
+<span class="sd">http://joshashby.com</span>
+<span class="sd">joshuaashby@joshashby.com</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">route_table</span> <span class="kn">as</span> <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">dispatch</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;seshat.route&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AutoURL"><a class="viewcode-back" href="../../route.html#seshat.route.AutoURL">[docs]</a><span class="k">class</span> <span class="nc">AutoURL</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base container and for generating and storing the url,  and controller</span>
+<span class="sd">    class in the route table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pageObject</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Attempts to generate the base URL from the module name. This uses</span>
+<span class="sd">        the file hierarchy within the controllers file to represent the URL.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fullModule</span> <span class="o">=</span> <span class="n">pageObject</span><span class="o">.</span><span class="n">__module__</span>
+
+        <span class="k">if</span> <span class="n">dispatch</span><span class="o">.</span><span class="n">controller_folder</span><span class="p">:</span>
+            <span class="n">folder</span> <span class="o">=</span> <span class="n">dispatch</span><span class="o">.</span><span class="n">controller_folder</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="s">&quot;.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">folder</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;.&quot;</span><span class="p">:</span>
+                <span class="n">folder</span> <span class="o">=</span> <span class="n">folder</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span>
+
+            <span class="n">pre_bits</span> <span class="o">=</span> <span class="n">fullModule</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">bits</span> <span class="o">=</span> <span class="n">pre_bits</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bits</span> <span class="o">=</span> <span class="n">fullModule</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)</span>
+
+        <span class="n">bases</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c"># Ignore the first and last parts of the module and make everything</span>
+        <span class="c"># lowercased so controllers can maybe be pep8 sometimes.</span>
+        <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">bits</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">bases</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bit</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s">&quot;/&quot;</span>
+        <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">bases</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">+=</span> <span class="n">base</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span>
+
+        <span class="c"># Everything lowercased. Because fuck uppercase... wait.</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">pageObject</span><span class="o">.</span><span class="n">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;index&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_index</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s">&quot;/&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_index</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">+=</span> <span class="n">name</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pageObject</span> <span class="o">=</span> <span class="n">pageObject</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pageObject</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pageObject</span><span class="o">.</span><span class="n">title</span>
+        <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="s">&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt; URL Object, title: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">+</span> <span class="s">&quot; url: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">+</span> <span class="s">&quot; object: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pageObject</span><span class="o">.</span><span class="n">__module__</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pageObject</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s">&quot; &gt;&quot;</span>
+
+</div>
+<div class="viewcode-block" id="route"><a class="viewcode-back" href="../../route.html#seshat.route.route">[docs]</a><span class="k">def</span> <span class="nf">route</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class decorator that will take and generate a route table entry for the</span>
+<span class="sd">    decorated controller class, based off of its name and its file hierarchy</span>
+
+<span class="sd">    Use like so::</span>
+
+<span class="sd">        from seshat.base_object import BaseObject</span>
+<span class="sd">        from seshat.route import route</span>
+
+<span class="sd">        @route()</span>
+<span class="sd">        class ControllerAndPageName(BaseObject):</span>
+<span class="sd">            pass</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">HTTPObject</span><span class="p">):</span>
+        <span class="n">urlObject</span> <span class="o">=</span> <span class="n">AutoURL</span><span class="p">(</span><span class="n">HTTPObject</span><span class="p">)</span>
+
+        <span class="n">u</span><span class="o">.</span><span class="n">urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">urlObject</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&quot;&quot;Auto generated route table entry for:</span>
+<span class="s">        Object: </span><span class="si">%(objectName)s</span><span class="s"></span>
+<span class="s">        Pattern: </span><span class="si">%(url)s</span><span class="s">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span><span class="s">&quot;url&quot;</span><span class="p">:</span> <span class="n">urlObject</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="s">&quot;objectName&quot;</span><span class="p">:</span> <span class="n">HTTPObject</span><span class="o">.</span><span class="n">__module__</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="n">HTTPObject</span><span class="o">.</span><span class="n">__name__</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">HTTPObject</span>
+    <span class="k">return</span> <span class="n">wrapper</span></div>
+</pre></div>
+
+          <footer>
+  
+
+  <hr/>
+
+  <p>
+      &copy; Copyright 2013, Joshua P Ashby.
+  </p>
+
+  <a href="https://www.github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="http://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+</body>
+</html>
