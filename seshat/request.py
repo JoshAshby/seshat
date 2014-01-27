@@ -168,8 +168,8 @@ class BaseRequest(object):
     def get_param(self, param, default="", cast=str):
         try:
             p = self.params[param]
-            if cast and cast != str:
-                if cast == bool:
+            if cast and cast is not str:
+                if cast is bool or type(default) is bool:
                     p = parse_bool(p)
                 else:
                     p = cast(p)
