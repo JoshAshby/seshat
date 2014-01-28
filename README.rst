@@ -32,7 +32,8 @@ A Few Minor Warnings
 Documentation
 =============
 
-Coming soon
+Can be found `here <https://seshat.readthedocs.org>`__.
+Documentation is kindly hosted by `ReadTheDocs <https://readthedocs.org>`__.
 
 Contributing
 ------------
