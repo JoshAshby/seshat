@@ -81,9 +81,6 @@ class BaseController(object):
               elif isinstance(c, Head):
                   return "", c
 
-              elif type(c) is tuple:
-                  return c
-
           content = getattr(self, self.request.method)()
           if isinstance(content, actions.BaseAction):
               self.head = content.head
