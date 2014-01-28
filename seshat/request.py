@@ -168,8 +168,7 @@ class BaseRequest(object):
             self.session_cookie = { value.key: value.value for key, value in cookie.iteritems() }
             self.session_ID = self.session_cookie[self.cookie_name]
 
-        except Exception as e:
-            logger.error(e)
+        except Exception:
             self.session_ID = str(uuid.uuid4())
             self.session_cookie = {self.cookie_name: self.session_ID}
 

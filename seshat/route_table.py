@@ -13,9 +13,12 @@ Josh Ashby
 http://joshashby.com
 joshuaashby@joshashby.com
 """
-import gevent
 from head import Head
 
+lookup_codes = {
+    "404": "404 NOT FOUND",
+    "500": "500 INTERNAL SERVER ERROR"
+    }
 
 class RouteTable(object):
     def __init__(self):
@@ -120,23 +123,22 @@ class RouteTable(object):
         return head.status[:3] in self.codes_to_catch.keys()
 
     def error(self, head, req):
-      if type(head) is not str:
-          code = head.status
-          error = head.error
+        if type(head) is not str:
+            code = head.status
+            error = head.error
 
-      else:
-          error = code = head
+        else:
+            error = code = head
 
-      if self.codes_to_catch[code[:3]]:
-          newHTTPObject = self.codes_to_catch[code[:3]](req)
-          newHTTPObject._error = error
-          dataThread = gevent.spawn(newHTTPObject._build)
-          dataThread.join()
+        code = lookup_codes.get(code, code)
 
-          return dataThread.get()
+        if self.codes_to_catch.get(code[:3]):
+            newHTTPObject = self.codes_to_catch[code[:3]](req)
+            newHTTPObject._error = error
+            return newHTTPObject._build()
 
-      else:
-          return "Error {}".format(code), Head(code)
+        else:
+            return "Error {}".format(code), Head(code)
 
 
 urls = RouteTable()

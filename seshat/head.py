@@ -64,7 +64,7 @@ class Head(object):
             self.headers.append(cookieHeader)
 
         self.headers.append(("Content-Length", str(length)))
-        self.headers.append(("Server", req._env["SERVER_SOFTWARE"]))
+        self.headers.append(("Server", req._env["SERVER_SOFTWARE"] if "SERVER_SOFTWARE" in req._env else "Unknown"))
         self.headers.append(("X-Seshat-Says", "Ello!"))
         error = self.error[1] if self.error is not None else ""
         self.headers.append(("X-Error", error))

@@ -12,7 +12,7 @@ Josh Ashby
 http://joshashby.com
 joshuaashby@joshashby.com
 """
-import gevent
+from greenlet import greenlet
 import logging
 
 from route_table import urls as route_table
@@ -65,10 +65,8 @@ def dispatch(env, start_response):
 
 
 def reply(newHTTPObject, req, start_response):
-    dataThread = gevent.spawn(newHTTPObject._build)
-    dataThread.join()
-
-    content, head = dataThread.get()
+    newHTTPObj = greenlet(newHTTPObject._build)
+    content, head = newHTTPObj.switch()
 
     if route_table.check_head(head):
         content, head = route_table.error(head, req)
@@ -79,7 +77,8 @@ def reply(newHTTPObject, req, start_response):
 
     log_response(req, head)
 
-    gevent.spawn(req.log, head)
+    g = greenlet(req.log)
+    g.switch(head)
 
     return [str(content)]
 
