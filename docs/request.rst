@@ -1,5 +1,5 @@
 :class:`BaseRequest`
 --------------------
 
-.. autoclass:: seshat.request.BaseRequest
+.. automodule:: seshat.request
     :members:
