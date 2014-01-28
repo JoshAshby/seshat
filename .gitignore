@@ -35,6 +35,8 @@ app/rethinkdb_data
 app/config/config.yaml
 app/config/initial.yaml
 
+docs/_build
+
 # Compiled source #
 ###################
 *.a

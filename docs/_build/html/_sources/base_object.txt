@@ -1,5 +1,0 @@
-:class:`BaseObject` Base Controller
------------------------------------
-
-.. autoclass:: seshat.base_object.BaseObject
-    :members:
