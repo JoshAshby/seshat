@@ -65,7 +65,8 @@ def dispatch(env, start_response):
 
 
 def reply(newHTTPObject, req, start_response):
-    content, head = greenlet(newHTTPObject._build)
+    newHTTPObj = greenlet(newHTTPObject._build)
+    content, head = newHTTPObj.switch()
 
     if route_table.check_head(head):
         content, head = route_table.error(head, req)

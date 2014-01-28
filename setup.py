@@ -13,7 +13,6 @@ setup(
     long_description=open('README.rst').read(),
     install_requires=[
         "nose >= 1.3.0",
-        "gevent==1.0",
         "greenlet==0.4.2",
         "wsgiref==0.1.2"
     ],
