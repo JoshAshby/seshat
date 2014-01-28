@@ -13,7 +13,6 @@ Josh Ashby
 http://joshashby.com
 joshuaashby@joshashby.com
 """
-import gevent
 from head import Head
 
 
@@ -130,10 +129,7 @@ class RouteTable(object):
       if self.codes_to_catch[code[:3]]:
           newHTTPObject = self.codes_to_catch[code[:3]](req)
           newHTTPObject._error = error
-          dataThread = gevent.spawn(newHTTPObject._build)
-          dataThread.join()
-
-          return dataThread.get()
+          return newHTTPObject._build()
 
       else:
           return "Error {}".format(code), Head(code)
