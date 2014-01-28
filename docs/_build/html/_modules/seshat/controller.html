@@ -69,12 +69,11 @@
         
         
             <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../controller.html"><tt class="docutils literal"><span class="pre">BaseController</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../controller.html"><tt class="docutils literal"><span class="pre">controller</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../route.html"><tt class="docutils literal"><span class="pre">route()</span></tt> Decorator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../head.html"><tt class="docutils literal"><span class="pre">Head</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../actions.html"><tt class="docutils literal"><span class="pre">actions</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../request.html"><tt class="docutils literal"><span class="pre">BaseRequest</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../route_table.html"><tt class="docutils literal"><span class="pre">RouteTable</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dispatch.html"><tt class="docutils literal"><span class="pre">dispatch</span></tt> Module</a></li>
 </ul>
 
@@ -106,9 +105,9 @@
   <h1>Source code for seshat.controller</h1><div class="highlight"><pre>
 <span class="c">#!/usr/bin/env python</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module provides a base controller class which can be used right away in</span>
-<span class="sd">its current state, or can be inherited from to create more advanced or custom</span>
-<span class="sd">controllers.</span>
+<span class="sd">No app built with Seshat does much without controllers. This module provides a</span>
+<span class="sd">base controller class which can be used right away in its current state, or can</span>
+<span class="sd">be inherited from to create more advanced or custom controllers.</span>
 
 <span class="sd">Basic use is like so::</span>
 
@@ -233,7 +232,7 @@
 <span class="sd">        perform some other action after each request.</span>
 
 <span class="sd">        :param content: the content from the content generating request method</span>
-<span class="sd">        that was called.</span>
+<span class="sd">          that was called.</span>
 <span class="sd">        :type content: `str`</span>
 
 <span class="sd">        :return: The original or modified content</span>

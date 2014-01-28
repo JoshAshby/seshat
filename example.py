@@ -1,20 +1,22 @@
-from gevent import monkey; monkey.patch_all()
-from gevent.pywsgi import WSGIServer
+from waitress import serve
 import seshat.dispatch as dispatch
 
 from seshat.route import route
-from seshat.base_object import BaseObject
-from seshat.actions import NotFound
+from seshat.controller import BaseController
+from seshat.actions import Redirect
+
 
 @route()
-class index(BaseObject):
+class index(BaseController):
   def GET(self):
-    return "wat"
+    name = self.request.get_param("name", "World!")
+    return "Hello, " + name
+
 
 @route()
-class wat(BaseObject):
+class wat(BaseController):
   def GET(self):
-    return NotFound()
+    return Redirect("/?name=Wat")
 
-server = WSGIServer(("127.0.0.1", 8001), dispatch.dispatch, log=None)
-server.serve_forever()
+
+serve(dispatch.dispatch)

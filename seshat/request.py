@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 """
+TODO: Doc This
+"""
+"""
 Seshat
 Web App/API framework built on top of gevent
 Main framework app
@@ -34,6 +37,11 @@ def parse_bool(p):
 
 
 class FileObject(object):
+    """
+    Provides a File like object which supports the common file operations,
+    along with providing some additional metadata which is sent from the
+    client.
+    """
     _template = "< FileObject @ {id} Filename: {filename} Data: {data} >"
     def __init__(self, file_obj):
         self.filename = file_obj.filename

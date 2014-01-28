@@ -1,5 +1,5 @@
-:class:`BaseController`
+:mod:`controller`
 -----------------------
 
-.. autoclass:: seshat.controller.BaseController
+.. automodule:: seshat.controller
     :members:

@@ -84,12 +84,28 @@ def route():
 
     Use like so::
 
-        from seshat.base_object import BaseObject
+        from seshat.controller import BaseController
         from seshat.route import route
 
         @route()
-        class ControllerAndPageName(BaseObject):
+        class index(BaseController):
             pass
+
+    which will result in a route for "/" being made for this controller.
+
+    controllers whose name is `index` automatically get routed to the root of
+    their folders, so an index controller in "profiles/" will have a route that
+    looks like "/profiles"
+
+    Controllers whose name is `view` will automatically get routed to any index
+    route that has an attached ID. Eg::
+
+        # In folder: profiles/
+        class view(BaseController):
+          pass
+
+    will be routed to if the request URL is "/profiles/5" and the resulting
+    id will be stored in `self.request.id`
     """
     def wrapper(HTTPObject):
         urlObject = AutoURL(HTTPObject)

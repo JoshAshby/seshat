@@ -20,17 +20,45 @@ class Head(object):
     Gives a basic container for the headers within a request.
     """
     def __init__(self, status="200 OK", headers=None):
+        """
+        Makes a new `Head` object which can then be manipulated and returned to
+        the client, eventually as a set a headers.
+
+        :param status: The status code which this controller should instantiate
+          to.
+        :param headers: A `list` of `tuples` which should be used as the starting
+          base for the headers.
+        """
         self.headers = headers or []
         self.status = status
+        """To change the status at anytime, you can simply just assign it a new
+        value."""
         self.error = None
+        """If an error was encounters then the stack trace will end up here"""
 
-    def set_header(self, key, value):
-        self.headers  = [(str(key), str(value))]
+    def reset_headers(self):
+        """
+        Allows you to reset the headers
+        """
+        self.headers  = []
 
     def add_header(self, key, value):
+        """
+        Allows you to add a new header to the list
+
+        Eg::
+
+            add_header("location", "/")
+
+        will result in the `tuple` ``("location", "/")`` being added to the
+        list of headers to be returned.
+
+        :param key: The header name
+        :param value: The header value
+        """
         self.headers.append((str(key), str(value)))
 
-    def generate_header(self, req, length):
+    def _generate_header(self, req, length):
         for morsal in req.session_cookie:
             cookieHeader = ("Set-Cookie", ("%s=%s")%(morsal, req.session_cookie[morsal]))
             self.headers.append(cookieHeader)

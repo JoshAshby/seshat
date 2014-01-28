@@ -48,7 +48,35 @@ A Few Minor Warnings
 Quick Start
 ===========
 
-Coming soon
+Getting started is fairly easy, take a look at the included `example.py`::
+
+    from waitress import serve
+    import seshat.dispatch as dispatch
+
+    from seshat.route import route
+    from seshat.controller import BaseController
+    from seshat.actions import NotFound
+
+
+    @route()
+    class index(BaseController):
+      def GET(self):
+        name = self.request.get_param("name", "World!")
+        return "Hello, " + name
+
+
+    @route()
+    class wat(BaseController):
+      def GET(self):
+        return Redirect("/?name=Wat")
+
+
+    serve(dispatch.dispatch)
+
+This starts a full web app on port 8080 that you can navigate your browser to
+`localhost <localhost:8080>`__ that will serve a basic page displaying the text
+"Hello, World". Navigating to localhost:8080/wat will redirect you back to the
+index, with the name now as "Wat".
 
 Contributing
 ------------
@@ -72,7 +100,6 @@ Doc Contents
    head
    actions
    request
-   route_table
    dispatch
 
 

@@ -58,7 +58,7 @@ def dispatch(env, start_response):
 
     else:
         content, head = route_table.error("404", req)
-        header = head.generate_header(req, len(content))
+        header = head._generate_header(req, len(content))
         start_response(head.status, header)
         log_response(req, head)
         return [str(content)]
@@ -73,7 +73,7 @@ def reply(newHTTPObject, req, start_response):
     if route_table.check_head(head):
         content, head = route_table.error(head, req)
 
-    header = head.generate_header(req, len(content))
+    header = head._generate_header(req, len(content))
 
     start_response(head.status, header)
 

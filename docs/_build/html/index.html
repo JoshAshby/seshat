@@ -44,7 +44,7 @@
 
   
     <link rel="top" title="Seshat 1.0.0 documentation" href="#"/>
-        <link rel="next" title="BaseController" href="controller.html"/> 
+        <link rel="next" title="controller" href="controller.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
@@ -69,12 +69,11 @@
         
         
             <ul>
-<li class="toctree-l1"><a class="reference internal" href="controller.html"><tt class="docutils literal"><span class="pre">BaseController</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="controller.html"><tt class="docutils literal"><span class="pre">controller</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="route.html"><tt class="docutils literal"><span class="pre">route()</span></tt> Decorator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="head.html"><tt class="docutils literal"><span class="pre">Head</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="actions.html"><tt class="docutils literal"><span class="pre">actions</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="request.html"><tt class="docutils literal"><span class="pre">BaseRequest</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="route_table.html"><tt class="docutils literal"><span class="pre">RouteTable</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="dispatch.html"><tt class="docutils literal"><span class="pre">dispatch</span></tt> Module</a></li>
 </ul>
 
@@ -133,7 +132,35 @@ broken.</li>
 </div>
 <div class="section" id="quick-start">
 <h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
-<p>Coming soon</p>
+<p>Getting started is fairly easy, take a look at the included <cite>example.py</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">waitress</span> <span class="kn">import</span> <span class="n">serve</span>
+<span class="kn">import</span> <span class="nn">seshat.dispatch</span> <span class="kn">as</span> <span class="nn">dispatch</span>
+
+<span class="kn">from</span> <span class="nn">seshat.route</span> <span class="kn">import</span> <span class="n">route</span>
+<span class="kn">from</span> <span class="nn">seshat.controller</span> <span class="kn">import</span> <span class="n">BaseController</span>
+<span class="kn">from</span> <span class="nn">seshat.actions</span> <span class="kn">import</span> <span class="n">NotFound</span>
+
+
+<span class="nd">@route</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">index</span><span class="p">(</span><span class="n">BaseController</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;World!&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s">&quot;Hello, &quot;</span> <span class="o">+</span> <span class="n">name</span>
+
+
+<span class="nd">@route</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">wat</span><span class="p">(</span><span class="n">BaseController</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Redirect</span><span class="p">(</span><span class="s">&quot;/?name=Wat&quot;</span><span class="p">)</span>
+
+
+<span class="n">serve</span><span class="p">(</span><span class="n">dispatch</span><span class="o">.</span><span class="n">dispatch</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This starts a full web app on port 8080 that you can navigate your browser to
+<a class="reference external" href="localhost:8080">localhost</a> that will serve a basic page displaying the text
+&#8220;Hello, World&#8221;. Navigating to localhost:8080/wat will redirect you back to the
+index, with the name now as &#8220;Wat&#8221;.</p>
 <div class="section" id="contributing">
 <h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
 <p>All code for this can be found online at
@@ -148,12 +175,11 @@ to go. Besides that, I&#8217;m releasing this under the GPLv3 License as found i
 <h2>Doc Contents<a class="headerlink" href="#doc-contents" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="controller.html"><tt class="docutils literal"><span class="pre">BaseController</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="controller.html"><tt class="docutils literal"><span class="pre">controller</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="route.html"><tt class="docutils literal"><span class="pre">route()</span></tt> Decorator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="head.html"><tt class="docutils literal"><span class="pre">Head</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="actions.html"><tt class="docutils literal"><span class="pre">actions</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="request.html"><tt class="docutils literal"><span class="pre">BaseRequest</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="route_table.html"><tt class="docutils literal"><span class="pre">RouteTable</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="dispatch.html"><tt class="docutils literal"><span class="pre">dispatch</span></tt> Module</a></li>
 </ul>
 </div>
@@ -173,7 +199,7 @@ to go. Besides that, I&#8217;m releasing this under the GPLv3 License as found i
   
     <div class="rst-footer-buttons">
       
-        <a href="controller.html" class="btn btn-neutral float-right" title="BaseController"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="controller.html" class="btn btn-neutral float-right" title="controller"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
     </div>

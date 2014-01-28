@@ -44,8 +44,8 @@
 
   
     <link rel="top" title="Seshat 1.0.0 documentation" href="index.html"/>
-        <link rel="next" title="RouteTable" href="route_table.html"/>
-        <link rel="prev" title="BaseRequest" href="request.html"/> 
+        <link rel="next" title="Head" href="head.html"/>
+        <link rel="prev" title="controller" href="controller.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
@@ -70,12 +70,11 @@
         
         
             <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="actions.html"><tt class="docutils literal"><span class="pre">actions</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="base_object.html"><tt class="docutils literal"><span class="pre">BaseObject</span></tt> Base Controller</a></li>
-<li class="toctree-l1"><a class="reference internal" href="head.html"><tt class="docutils literal"><span class="pre">Head</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="request.html"><tt class="docutils literal"><span class="pre">BaseRequest</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="controller.html"><tt class="docutils literal"><span class="pre">controller</span></tt></a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href=""><tt class="docutils literal"><span class="pre">route()</span></tt> Decorator</a></li>
-<li class="toctree-l1"><a class="reference internal" href="route_table.html"><tt class="docutils literal"><span class="pre">RouteTable</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="head.html"><tt class="docutils literal"><span class="pre">Head</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="actions.html"><tt class="docutils literal"><span class="pre">actions</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="request.html"><tt class="docutils literal"><span class="pre">BaseRequest</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="dispatch.html"><tt class="docutils literal"><span class="pre">dispatch</span></tt> Module</a></li>
 </ul>
 
@@ -112,14 +111,27 @@
 <dd><p>Class decorator that will take and generate a route table entry for the
 decorated controller class, based off of its name and its file hierarchy</p>
 <p>Use like so:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">seshat.base_object</span> <span class="kn">import</span> <span class="n">BaseObject</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">seshat.controller</span> <span class="kn">import</span> <span class="n">BaseController</span>
 <span class="kn">from</span> <span class="nn">seshat.route</span> <span class="kn">import</span> <span class="n">route</span>
 
 <span class="nd">@route</span><span class="p">()</span>
-<span class="k">class</span> <span class="nc">ControllerAndPageName</span><span class="p">(</span><span class="n">BaseObject</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">index</span><span class="p">(</span><span class="n">BaseController</span><span class="p">):</span>
     <span class="k">pass</span>
 </pre></div>
 </div>
+<p>which will result in a route for &#8220;/&#8221; being made for this controller.</p>
+<p>controllers whose name is <cite>index</cite> automatically get routed to the root of
+their folders, so an index controller in &#8220;profiles/&#8221; will have a route that
+looks like &#8220;/profiles&#8221;</p>
+<p>Controllers whose name is <cite>view</cite> will automatically get routed to any index
+route that has an attached ID. Eg:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># In folder: profiles/</span>
+<span class="k">class</span> <span class="nc">view</span><span class="p">(</span><span class="n">BaseController</span><span class="p">):</span>
+  <span class="k">pass</span>
+</pre></div>
+</div>
+<p>will be routed to if the request URL is &#8220;/profiles/5&#8221; and the resulting
+id will be stored in <cite>self.request.id</cite></p>
 </dd></dl>
 
 </div>
@@ -129,10 +141,10 @@ decorated controller class, based off of its name and its file hierarchy</p>
   
     <div class="rst-footer-buttons">
       
-        <a href="route_table.html" class="btn btn-neutral float-right" title="RouteTable"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="head.html" class="btn btn-neutral float-right" title="Head"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="request.html" class="btn btn-neutral" title="BaseRequest"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="controller.html" class="btn btn-neutral" title="controller"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   

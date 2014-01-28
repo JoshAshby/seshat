@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BaseController &mdash; Seshat 1.0.0 documentation</title>
+  <title>controller &mdash; Seshat 1.0.0 documentation</title>
   
 
   
@@ -70,12 +70,11 @@
         
         
             <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href=""><tt class="docutils literal"><span class="pre">BaseController</span></tt></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href=""><tt class="docutils literal"><span class="pre">controller</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="route.html"><tt class="docutils literal"><span class="pre">route()</span></tt> Decorator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="head.html"><tt class="docutils literal"><span class="pre">Head</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="actions.html"><tt class="docutils literal"><span class="pre">actions</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="request.html"><tt class="docutils literal"><span class="pre">BaseRequest</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="route_table.html"><tt class="docutils literal"><span class="pre">RouteTable</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="dispatch.html"><tt class="docutils literal"><span class="pre">dispatch</span></tt> Module</a></li>
 </ul>
 
@@ -98,14 +97,28 @@
         <div class="rst-content">
           <ul class="wy-breadcrumbs">
   <li><a href="index.html">Docs</a> &raquo;</li>
-  <li><a href=""><tt class="docutils literal"><span class="pre">BaseController</span></tt></a></li>
+  <li><a href=""><tt class="docutils literal"><span class="pre">controller</span></tt></a></li>
   
 </ul>
 <hr/>
 
           
-  <div class="section" id="basecontroller">
-<h1><tt class="xref py py-class docutils literal"><span class="pre">BaseController</span></tt><a class="headerlink" href="#basecontroller" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-seshat.controller">
+<span id="controller"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">controller</span></tt><a class="headerlink" href="#module-seshat.controller" title="Permalink to this headline">¶</a></h1>
+<p>No app built with Seshat does much without controllers. This module provides a
+base controller class which can be used right away in its current state, or can
+be inherited from to create more advanced or custom controllers.</p>
+<p>Basic use is like so:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">seshat.controller</span> <span class="kn">import</span> <span class="n">BaseController</span>
+
+<span class="k">class</span> <span class="nc">index</span><span class="p">(</span><span class="n">BaseController</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&quot;&lt;h1&gt;WAT&lt;/h1&gt;&quot;</span>
+</pre></div>
+</div>
+<p>If you see something along the lines of &#8216;Content Generating Request Method&#8217; it
+will usually mean <tt class="docutils literal"><span class="pre">GET()</span></tt>, <tt class="docutils literal"><span class="pre">POST()</span></tt>, or any other HTTP method verb which
+might be given to the controller.</p>
 <dl class="class">
 <dt id="seshat.controller.BaseController">
 <em class="property">class </em><tt class="descclassname">seshat.controller.</tt><tt class="descname">BaseController</tt><big>(</big><em>request</em><big>)</big><a class="reference internal" href="_modules/seshat/controller.html#BaseController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seshat.controller.BaseController" title="Permalink to this definition">¶</a></dt>
@@ -175,19 +188,12 @@ perform some other action after each request.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>content</strong> &#8211; the content from the content generating request method</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>content</strong> (<cite>str</cite>) &#8211; the content from the content generating request method
+that was called.</td>
 </tr>
-</tbody>
-</table>
-<p>that was called.
-:type content: <cite>str</cite></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The original or modified content</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The original or modified content</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><cite>str</cite></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><cite>str</cite></td>
 </tr>
 </tbody>
 </table>

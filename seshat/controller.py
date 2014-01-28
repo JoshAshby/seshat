@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-This module provides a base controller class which can be used right away in
-its current state, or can be inherited from to create more advanced or custom
-controllers.
+No app built with Seshat does much without controllers. This module provides a
+base controller class which can be used right away in its current state, or can
+be inherited from to create more advanced or custom controllers.
 
 Basic use is like so::
 
@@ -127,7 +127,7 @@ class BaseController(object):
         perform some other action after each request.
 
         :param content: the content from the content generating request method
-        that was called.
+          that was called.
         :type content: `str`
 
         :return: The original or modified content
