@@ -188,7 +188,7 @@ class BaseRequest(object):
             self.session_ID = str(uuid.uuid4())
             self.session_cookie = {self.cookie_name: self.session_ID}
 
-    def get_param(self, param, default="", cast=str):
+    def get_param(self, parameter, default="", cast=str):
         """
         Allows you to get a parameter from the request. If the parameter does
         not exist, or is empty, then a default will be returned. You can also
@@ -197,13 +197,13 @@ class BaseRequest(object):
         If a parameter has multiple values then this will return a list of all
         those values.
 
-        :param param: The name of the parameter to get
-        :param default: The default to return if the parameter is nonexistant
+        :param parameter: The name of the parameter to get
+        :param default: The default to return if the parameter is nonexistent
           or empty
-        :param cast: An optional cast for the paramter.
+        :param cast: An optional cast for the parameter.
         """
         try:
-            p = self.params[param]
+            p = self.params[parameter]
             if type(default) == bool:
                     p = parse_bool(p)
 
@@ -263,6 +263,6 @@ class BaseRequest(object):
         file.
 
         :param head: The reponses :py:class:`.Head` object which was returned
-        to the client.
+          to the client.
         """
         pass

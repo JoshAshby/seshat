@@ -4,6 +4,12 @@ Dispatch is the actual WSGI app which is served. This module also contains
 several configuration properties, along with easy access to the apps route
 table though `route_table`. Documentation on the route table can be found
 below: :py:class:`.RouteTable`
+
+
+.. note::
+
+    If you would like to see the logs that seshat produces, using the standard
+    library `logging` module, create a handler for `seshat`
 """
 """
 For more information and licensing, see: https://github.com/JoshAshby/seshat
@@ -37,9 +43,6 @@ def dispatch(env, start_response):
 
         from waitress import serve
         serve(dispatch)
-
-    if you want to see the logs, provide a :py:mod:`logging` handler for
-      `seshat`
 
     """
     req = request_obj(env)
