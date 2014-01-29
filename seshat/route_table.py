@@ -14,11 +14,13 @@ http://joshashby.com
 joshuaashby@joshashby.com
 """
 from head import Head
+from route_containers import RouteContainer
 
 lookup_codes = {
     "404": "404 NOT FOUND",
     "500": "500 INTERNAL SERVER ERROR"
     }
+
 
 class RouteTable(object):
     def __init__(self):
@@ -28,8 +30,15 @@ class RouteTable(object):
             "500": None
             }
 
-    def append(self, url):
-        self._data[url.url] = url
+    def add_route(self, r_container):
+        """
+        Adds the given route container to the route table.
+
+        :param r_container: The route container which contains the url and controller for a route.
+        :type r_container: :py:class:`.RouteContainer`
+        """
+        assert isinstance(r_container, RouteContainer)
+        self._data[r_container.url] = r_container
 
     def get(self, request):
         """
@@ -69,7 +78,7 @@ class RouteTable(object):
                             found = True
 
         if base is not None:
-            request.post_route(extended)
+            request._post_route(extended)
 
             name = base
 

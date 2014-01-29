@@ -93,12 +93,12 @@ class BaseRequest(object):
         self._raw_url = env["PATH_INFO"]
         self.url = urlparse.urlparse(env["PATH_INFO"])
 
-        self.parse_params()
-        self.parse_cookie()
+        self._parse_params()
+        self._parse_cookie()
         self.build_session()
         self.build_cfg()
 
-        self.method = self._env["REQUEST_METHOD"]
+        self.method = self._env["REQUEST_METHOD"].upper()
         self.remote = env["HTTP_X_REAL_IP"] if "HTTP_X_REAL_IP" in env else "Unknown IP"
         self.user_agent = env["HTTP_USER_AGENT"] if "HTTP_USER_AGENT" in env else "Unknown User Agent"
         self.referer = env["HTTP_REFERER"] if "HTTP_REFERER" in env else "No Referer"
@@ -124,7 +124,7 @@ class BaseRequest(object):
         a = [ i for i in self.remote_accepts if t in i[0] ]
         return len(a) > 0
 
-    def post_route(self, extended):
+    def _post_route(self, extended):
         if extended:
             parts = extended.split('/', 1)
             self.id = parts[0]
@@ -138,7 +138,7 @@ class BaseRequest(object):
         else:
             self.pre_id_url = self.url.path.strip("/").split("/")
 
-    def parse_params(self):
+    def _parse_params(self):
         all_mem = {}
         all_raw = {}
         all_files = {}
@@ -161,7 +161,7 @@ class BaseRequest(object):
         self.params = all_mem
         self.files = all_files
 
-    def parse_cookie(self):
+    def _parse_cookie(self):
         cookie = Cookie.SimpleCookie()
         try:
             cookie.load(self._env["HTTP_COOKIE"])
