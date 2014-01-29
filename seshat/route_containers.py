@@ -17,6 +17,10 @@ import logging
 logger = logging.getLogger("seshat.route")
 
 controller_folder = ""
+"""The folder where the controllers are located in. Since the auto route
+generation uses folder hierarchy, this setting allows to you to have
+controllers in a single folder but not have that folder end up as the route
+prefix."""
 
 
 class RouteContainer(object):

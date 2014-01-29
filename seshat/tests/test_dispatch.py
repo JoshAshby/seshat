@@ -1,11 +1,13 @@
 import seshat.dispatch as dispatch
 from seshat.route import route
+import seshat.route_containers as route_containers
 from seshat.controller import BaseController
 
 import os
 from webob import Request
 
-dispatch.controller_folder = os.path.relpath(__file__).rsplit("/", 1)[0]
+route_containers.controller_folder = os.path.relpath(__file__).rsplit("/", 1)[0]
+
 
 @route()
 class index(BaseController):

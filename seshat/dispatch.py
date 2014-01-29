@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 """
-TODO: Doc this.
+Dispatch is the actual WSGI app which is served. This module also contains
+several configuration properties, along with easy access to the apps route
+table though `route_table`. Documentation on the route table can be found
+below: :py:class:`.RouteTable`
 """
 """
 For more information and licensing, see: https://github.com/JoshAshby/seshat
@@ -23,11 +26,6 @@ logger = logging.getLogger("seshat.dispatch")
 request_obj = BaseRequest
 """The object which should be used to create a new Request item from. Should
 inherit from BaseRequest"""
-controller_folder = ""
-"""The folder where the controllers are located in. Since the auto route
-generation uses folder hierarchy, this setting allows to you to have
-controllers in a single folder but not have that folder end up as the route
-prefix."""
 
 
 def dispatch(env, start_response):

@@ -1,5 +1,9 @@
 :class:`BaseRequest`
 --------------------
 
-.. automodule:: seshat.request
+.. autoclass:: seshat.request.FileObject
+    :members:
+    :undoc-members:
+
+.. autoclass:: seshat.request.BaseRequest
     :members:

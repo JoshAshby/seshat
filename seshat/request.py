@@ -83,7 +83,12 @@ class FileObject(object):
 
 
 class BaseRequest(object):
+    """
+    Represents the request from the server, and contains various information
+    and utilities. Also the place to store the session object.
+    """
     cookie_name = "sid"
+    """The name of the cookie"""
 
     def __init__(self, env):
         self.params = {}
@@ -92,6 +97,7 @@ class BaseRequest(object):
 
         self._raw_url = env["PATH_INFO"]
         self.url = urlparse.urlparse(env["PATH_INFO"])
+        """A `urlparse` result of the requests path"""
 
         self._parse_params()
         self._parse_cookie()
@@ -99,9 +105,16 @@ class BaseRequest(object):
         self.build_cfg()
 
         self.method = self._env["REQUEST_METHOD"].upper()
+        """The HTTP method by which the request was made, in all caps."""
+
         self.remote = env["HTTP_X_REAL_IP"] if "HTTP_X_REAL_IP" in env else "Unknown IP"
+        """The clients IP, otherwise `Unknown IP`"""
+
         self.user_agent = env["HTTP_USER_AGENT"] if "HTTP_USER_AGENT" in env else "Unknown User Agent"
-        self.referer = env["HTTP_REFERER"] if "HTTP_REFERER" in env else "No Referer"
+        """The user agent, unparsed, or the string `Unknown User Agent`"""
+
+        self.referer = env["HTTP_REFERER"] if "HTTP_REFERER" in env else ""
+        """The referal URL if it exists, otherwise an empty string."""
 
         self.remote_accepts = []
 
@@ -121,6 +134,9 @@ class BaseRequest(object):
         self.command = None
 
     def accepts(self, t):
+        """
+        Determines if the given mimetype is accepted by the client.
+        """
         a = [ i for i in self.remote_accepts if t in i[0] ]
         return len(a) > 0
 
@@ -173,6 +189,19 @@ class BaseRequest(object):
             self.session_cookie = {self.cookie_name: self.session_ID}
 
     def get_param(self, param, default="", cast=str):
+        """
+        Allows you to get a parameter from the request. If the parameter does
+        not exist, or is empty, then a default will be returned. You can also
+        choose to optionally cast the parameter.
+
+        If a parameter has multiple values then this will return a list of all
+        those values.
+
+        :param param: The name of the parameter to get
+        :param default: The default to return if the parameter is nonexistant
+          or empty
+        :param cast: An optional cast for the paramter.
+        """
         try:
             p = self.params[param]
             if type(default) == bool:
@@ -190,6 +219,15 @@ class BaseRequest(object):
             return default
 
     def get_file(self, name):
+        """
+        Along with getting parameters, one may wish to retrieve other data such
+        as files sent.
+
+        This provides an interface for getting a file like
+        :py:class:`.FileObject` which can be used like a normal file but also
+        holds some meta data sent with the request. If no file by the given
+        name is found then this will return `None`
+        """
         if name in self.files and self.files[name].filename:
               return self.files[name]
 
@@ -205,10 +243,26 @@ class BaseRequest(object):
             return "/".join([self.id, self.command])
 
     def build_session(self):
+        """
+        Called during the objects instantiation.
+        Override to set the requests `session` property. 
+        """
         pass
 
     def build_cfg(self):
+        """
+        Called during the objects instantiation.
+        Override to set the requests `cfg` property. 
+        """
         pass
 
     def log(self, head):
+        """
+        Called right at the end of the request when the response is being
+        returned to the client. This is useful for logging to a database or log
+        file.
+
+        :param head: The reponses :py:class:`.Head` object which was returned
+        to the client.
+        """
         pass

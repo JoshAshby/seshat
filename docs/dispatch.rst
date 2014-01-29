@@ -5,4 +5,4 @@
     :members:
 
 .. autoclass:: seshat.route_table.RouteTable
-    :members: register_error
+    :members: add_route, register_error

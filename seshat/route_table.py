@@ -91,7 +91,7 @@ class RouteTable(object):
                 if tmp in self._data:
                     name = tmp
 
-            obj = self._data[name].pageObject
+            obj = self._data[name].controller
 
         return obj
 
