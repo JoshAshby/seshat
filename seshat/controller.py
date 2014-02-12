@@ -28,8 +28,10 @@ joshuaashby@joshashby.com
 """
 import traceback
 import actions
-
+import logging
 from head import Head
+
+logger = logging.getLogger("seshat.controller")
 
 
 class BaseController(object):
@@ -66,7 +68,7 @@ class BaseController(object):
         creation process of your controller, without having to override
         `__init__ itself`.
 
-        This should accept nothing and return nothing. 
+        This should accept nothing and return nothing.
         """
         pass
 
@@ -88,7 +90,10 @@ class BaseController(object):
           self.post_content_hook(content)
 
       except Exception as e:
-          self.head.error = (e, str(traceback.format_exc()))
+          tb = str(traceback.format_exc())
+          logger.exception(e)
+          logger.error(tb)
+          self.head.error = (e, tb)
           self.head.status = "500 INTERNAL SERVER ERROR"
 
       return content, self.head

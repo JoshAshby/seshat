@@ -245,14 +245,14 @@ class BaseRequest(object):
     def build_session(self):
         """
         Called during the objects instantiation.
-        Override to set the requests `session` property. 
+        Override to set the requests `session` property.
         """
         pass
 
     def build_cfg(self):
         """
         Called during the objects instantiation.
-        Override to set the requests `cfg` property. 
+        Override to set the requests `cfg` property.
         """
         pass
 
