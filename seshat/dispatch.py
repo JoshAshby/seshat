@@ -24,6 +24,7 @@ joshuaashby@joshashby.com
 from greenlet import greenlet
 import logging
 
+from actions import BaseAction
 from error_catcher import catcher as error_catcher
 from route_table import urls as route_table
 from request import BaseRequest
@@ -74,6 +75,10 @@ def reply(newHTTPObject, req, start_response):
     if error_catcher.check(head):
         content, head = error_catcher.error(head, req)
 
+    elif isinstance(content, BaseAction):
+        head = content.head
+        content = ""
+
     header = head._generate_header(req, len(content))
 
     start_response(head.status, header)
@@ -107,7 +112,7 @@ def log_obj(req, obj):
 
 
 def log_response(req, head):
-    errors = ", ".join(head.errors)
+    errors = ", ".join([ str(e) for e in head.errors ])
     logger.debug("""\n\r--------- Response ---------------------
     URL: %s
     Status: %s

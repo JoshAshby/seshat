@@ -71,7 +71,8 @@ class Head(object):
         self.headers.append(("X-Seshat-Says", "Ello!"))
 
         if self.errors is not None:
-            errors = "\n".join(self.errors)
+            errors = ", ".join([ str(e) for e in self.errors ])
+            errors = errors.replace("\n", "").replace("\r", "")
         self.headers.append(("X-Errors", errors))
 
         return self.headers

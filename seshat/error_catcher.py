@@ -25,6 +25,7 @@ lookup_codes = {
 class ErrorCatcher(object):
     def __init__(self):
         self.codes_to_catch = {
+            "401": None,
             "404": None,
             "500": None
             }
