@@ -71,7 +71,7 @@ def reply(newHTTPObject, req, start_response):
     newHTTPObj = greenlet(newHTTPObject._build)
     content, head = newHTTPObj.switch()
 
-    if error_catcher.catcher.check(head):
+    if error_catcher.check(head):
         content, head = error_catcher.error(head, req)
 
     header = head._generate_header(req, len(content))
