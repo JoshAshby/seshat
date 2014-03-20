@@ -54,6 +54,9 @@ class BaseAction(object):
     def __unicode__(self):
         return ""
 
+    def encode(self, val):
+        return str(self).encode(val)
+
 
 ##############################################################################
   ######     ###       ###

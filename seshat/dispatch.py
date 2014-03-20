@@ -75,10 +75,6 @@ def reply(newHTTPObject, req, start_response):
     if error_catcher.check(head):
         content, head = error_catcher.error(head, req)
 
-    elif isinstance(content, BaseAction):
-        head = content.head
-        content = ""
-
     header = head._generate_header(req, len(content))
 
     start_response(head.status, header)
