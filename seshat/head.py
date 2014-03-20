@@ -19,7 +19,7 @@ class Head(object):
     """
     Gives a basic container for the headers within a request.
     """
-    def __init__(self, status="200 OK", headers=None):
+    def __init__(self, status="200 OK", headers=None, errors=None):
         """
         Makes a new `Head` object which can then be manipulated and returned to
         the client, eventually as a set a headers.
@@ -28,12 +28,15 @@ class Head(object):
           to.
         :param headers: A `list` of `tuples` which should be used as the starting
           base for the headers.
+
+        :param errors: A `list` of strings. If this is present then the field
+          will end up in the headers as X-Errors
         """
         self.headers = headers or []
         self.status = status
         """To change the status at anytime, you can simply just assign it a new
         value."""
-        self.error = None
+        self.errors = errors or []
         """If an error was encounters then the stack trace will end up here"""
 
     def reset_headers(self):
@@ -66,7 +69,9 @@ class Head(object):
         self.headers.append(("Content-Length", str(length)))
         self.headers.append(("Server", req._env["SERVER_SOFTWARE"] if "SERVER_SOFTWARE" in req._env else "Unknown"))
         self.headers.append(("X-Seshat-Says", "Ello!"))
-        error = self.error[1] if self.error is not None else ""
-        self.headers.append(("X-Error", error))
+
+        if self.errors is not None:
+            errors = "\n".join(self.errors)
+        self.headers.append(("X-Errors", errors))
 
         return self.headers

@@ -56,7 +56,7 @@ class BaseController(object):
 
         Support for `Not Supported` status codes may be added later, ironically.
     """
-    _error = None
+    error = None
     def __init__(self, request):
         self.head = Head()
         self.request = request
@@ -73,15 +73,15 @@ class BaseController(object):
         pass
 
     def _build(self):
-      content = ""
+      content = u""
       try:
           c = self.pre_content_hook()
           if c is not None:
               if isinstance(c, actions.BaseAction):
-                  return "", c.head
+                  return u"", c.head
 
               elif isinstance(c, Head):
-                  return "", c
+                  return u"", c
 
           content = getattr(self, self.request.method)()
           if isinstance(content, actions.BaseAction):
@@ -93,8 +93,7 @@ class BaseController(object):
           tb = str(traceback.format_exc())
           logger.exception(e)
           logger.error(tb)
-          self.head.error = (e, tb)
-          self.head.status = "500 INTERNAL SERVER ERROR"
+          self.head = Head("500 INTERNAL SERVER ERROR", errors=[e, tb])
 
       return content, self.head
 
@@ -149,23 +148,5 @@ class BaseController(object):
     def GET(self):
         """
         Will be called if the request method is GET
-        """
-        pass
-
-    def POST(self):
-        """
-        Will be called if the request method is POST
-        """
-        pass
-
-    def PUT(self):
-        """
-        Will be called if the request method is PUT
-        """
-        pass
-
-    def DELETE(self):
-        """
-        Will be called if the request method is HEAD
         """
         pass

@@ -156,7 +156,6 @@ class BaseRequest(object):
 
     def _parse_params(self):
         all_mem = {}
-        all_raw = {}
         all_files = {}
 
         temp_file = tempfile.TemporaryFile()
@@ -170,7 +169,6 @@ class BaseRequest(object):
                 all_files[fi.name] = fi
             else:
                 all_mem[bit] = form.getvalue(bit)
-                all_raw[bit] = form.getvalue(bit)
 
         temp_file.close()
 

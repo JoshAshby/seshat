@@ -55,6 +55,17 @@ class BaseAction(object):
         return ""
 
 
+##############################################################################
+  ######     ###       ###
+       #   ##   ##   ##   ##
+       #   ##   ##   ##   ##
+       #   ##   ##   ##   ##
+  ######   ##   ##   ##   ##
+       #   ##   ##   ##   ##
+       #   ##   ##   ##   ##
+       #   ##   ##   ##   ##
+  ######     ###       ###
+##############################################################################
 class Redirect(BaseAction):
     """
     Returns a 303 See Other status code along with a `location` header back
@@ -68,6 +79,35 @@ class Redirect(BaseAction):
         self.head.add_header("Location", loc)
 
 
+##############################################################################
+     ###     ###       ###
+    #  #   ##   ##   ##   ##
+   #   #   ##   ##   ##   ##
+  #    #   ##   ##   ##   ##
+ #######   ##   ##   ##   ##
+       #   ##   ##   ##   ##
+       #   ##   ##   ##   ##
+       #   ##   ##   ##   ##
+       #     ###       ###
+##############################################################################
+class BadRequest(BaseAction):
+    def __init__(self):
+        self.head = Head("400 BAD REQUEST")
+
+
+class Unauthorized(BaseAction):
+    """
+    Returns a 401 Unauthorized status code back to the client
+    """
+    def __init__(self):
+        self.head = Head("401 UNAUTHORIZED")
+
+
+class Forbidden(BaseAction):
+    def __init__(self):
+        self.head = Head("403 FORBIDDEN")
+
+
 class NotFound(BaseAction):
     """
     Returns a 404 Not Found code and the resulting 404 error controller to be
@@ -77,9 +117,9 @@ class NotFound(BaseAction):
         self.head = Head("404 NOT FOUND")
 
 
-class Unauthorized(BaseAction):
-    """
-    Returns a 401 Unauthorized status code back to the client
-    """
-    def __init__(self):
-        self.head = Head("401 UNAUTHORIZED")
+class MethodNotAllowed(BaseAction):
+    def __init__(self, allow):
+        assert type(allow) is list
+        a = ", ".join(allow).upper()
+        al = [("Allow", a)]
+        self.head = Head("405 METHOD NOT ALLOWED", al)
