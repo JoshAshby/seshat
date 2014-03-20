@@ -24,7 +24,7 @@ joshuaashby@joshashby.com
 from greenlet import greenlet
 import logging
 
-from error_catcher import catcher
+from error_catcher import catcher as error_catcher
 from route_table import urls as route_table
 from request import BaseRequest
 
@@ -60,7 +60,7 @@ def dispatch(env, start_response):
         return reply(newHTTPObject, req, start_response)
 
     else:
-        content, head = catcher.error("404", req)
+        content, head = error_catcher.error("404", req)
         header = head._generate_header(req, len(content))
         start_response(head.status, header)
         log_response(req, head)
@@ -71,8 +71,8 @@ def reply(newHTTPObject, req, start_response):
     newHTTPObj = greenlet(newHTTPObject._build)
     content, head = newHTTPObj.switch()
 
-    if catcher.check(head):
-        content, head = catcher.error(head, req)
+    if error_catcher.catcher.check(head):
+        content, head = error_catcher.error(head, req)
 
     header = head._generate_header(req, len(content))
 
@@ -107,9 +107,9 @@ def log_obj(req, obj):
 
 
 def log_response(req, head):
-    error = head.error[1] if head.error is not None else ""
+    errors = ", ".join(head.errors)
     logger.debug("""\n\r--------- Response ---------------------
     URL: %s
     Status: %s
     Error: %s
-    """ % (req.url.path, head.status, error))
+    """ % (req.url.path, head.status, errors))
