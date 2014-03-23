@@ -101,6 +101,7 @@ class BaseRequest(object):
 
         self._parse_params()
         self._parse_cookie()
+        self._parse_auth()
         self.build_session()
         self.build_cfg()
 
@@ -163,12 +164,13 @@ class BaseRequest(object):
         temp_file.seek(0)
         form = cgi.FieldStorage(fp=temp_file, environ=self._env, keep_blank_values=True)
 
-        for bit in form:
-            if hasattr(form[bit], "filename") and form[bit].filename is not None:
-                fi = FileObject(form[bit])
-                all_files[fi.name] = fi
-            else:
-                all_mem[bit] = form.getvalue(bit)
+        if isinstance(form.value, list):
+            for bit in form:
+                if hasattr(form[bit], "filename") and form[bit].filename is not None:
+                    fi = FileObject(form[bit])
+                    all_files[fi.name] = fi
+                else:
+                    all_mem[bit] = form.getvalue(bit)
 
         temp_file.close()
 
@@ -185,6 +187,16 @@ class BaseRequest(object):
         except Exception:
             self.session_ID = str(uuid.uuid4())
             self.session_cookie = {self.cookie_name: self.session_ID}
+
+    def _parse_auth(self):
+        if "HTTP_AUTHORIZATION" in self._env:
+            auth_parts = self._env["HTTP_AUTHORIZATION"].split(" ")
+            if len(auth_parts) > 1:
+                if auth_parts[0].lower() == "basic":
+                    name, passwd = base64.b64decode(auth_parts[1]).split(":")
+                    self.auth = {"username": name, "password": passwd}
+        else:
+            self.auth = None
 
     def get_param(self, parameter, default="", cast=str):
         """
