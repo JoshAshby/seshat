@@ -12,23 +12,16 @@ Josh Ashby
 http://joshashby.com
 joshuaashby@joshashby.com
 """
-from head import Head
-
-
-lookup_codes = {
-    "401": "401 UNAUTHORIZE",
-    "404": "404 NOT FOUND",
-    "500": "500 INTERNAL SERVER ERROR"
-    }
+from response import Response
 
 
 class ErrorCatcher(object):
     def __init__(self):
         self.codes_to_catch = {
-            "401": None,
-            "404": None,
-            "500": None
-            }
+            401: None,
+            404: None,
+            500: None
+        }
 
     def register(self, code, controller):
         """
@@ -48,27 +41,31 @@ class ErrorCatcher(object):
         """
         self.codes_to_catch[code[:3]] = controller
 
-    def check(self, head):
-        return head.status[:3] in self.codes_to_catch.keys()
+    def __call__(self, res, req):
+        """
+        :param res: A `.Response` object
+        :param req: A `.Request` object
+        """
+        if self.check(res):
+            return self.error(res.status, req)
 
-    def error(self, head, req):
-        if type(head) is not str:
-            code = head.status
-            errors = head.errors
+        return None
+
+    def check(self, res):
+        return res.status[:3] in self.codes_to_catch.keys()
+
+    def error(self, code, req):
+        if type(code) is str:
+            code = int(code[:3])
+
+        if self.codes_to_catch.get(code):
+            newHTTPObject = self.codes_to_catch[code](req)
+            return newHTTPObject()
 
         else:
-            code = head
-            errors = [head]
-
-        code = lookup_codes.get(code, code)
-
-        if self.codes_to_catch.get(code[:3]):
-            newHTTPObject = self.codes_to_catch[code[:3]](req)
-            newHTTPObject.errors = errors
-            return newHTTPObject._build()
-
-        else:
-            return "Error {}".format(code), Head(code)
+            res = Response("Error {}".format(code))
+            res.status = code
+            return res
 
 
 catcher = ErrorCatcher()

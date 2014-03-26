@@ -29,12 +29,12 @@ joshuaashby@joshashby.com
 import traceback
 import actions
 import logging
-from head import Head
+from response import Response
 
 logger = logging.getLogger("seshat.controller")
 
 
-class BaseController(object):
+class Controller(object):
     """
     The parent of all controllers which Seshat will serve.
 
@@ -56,9 +56,7 @@ class BaseController(object):
 
         Support for `Not Supported` status codes may be added later, ironically.
     """
-    error = None
     def __init__(self, request):
-        self.head = Head()
         self.request = request
         self.post_init_hook()
 
@@ -72,30 +70,30 @@ class BaseController(object):
         """
         pass
 
-    def _build(self):
-      content = u""
+    def __call__(self):
+      content = None
       try:
           c = self.pre_content_hook()
           if c is not None:
               if isinstance(c, actions.BaseAction):
-                  return u"", c.head
+                  return c
 
-              elif isinstance(c, Head):
-                  return u"", c
+          if hasattr(self, self.request.method):
+              content = getattr(self, self.request.method)()
+              if isinstance(content, actions.BaseAction):
+                  return content
 
-          content = getattr(self, self.request.method)()
-          if isinstance(content, actions.BaseAction):
-              self.head = content.head
-
-          self.post_content_hook(content)
+              self.post_content_hook(content)
+          else:
+              return actions.MethodNotSupported()
 
       except Exception as e:
           tb = str(traceback.format_exc())
           logger.exception(e)
           logger.error(tb)
-          self.head = Head("500 INTERNAL SERVER ERROR", errors=[e, tb])
+          self.req.error = (e, tb)
 
-      return content, self.head
+      return content
 
     def pre_content_hook(self):
         """

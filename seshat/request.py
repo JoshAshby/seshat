@@ -19,11 +19,10 @@ joshuaashby@joshashby.com
 import logging
 logger = logging.getLogger("seshat.request")
 
-import Cookie
-import uuid
 import cgi
 import tempfile
 import urlparse
+from headers import Headers
 
 
 def parse_bool(p):
@@ -82,78 +81,22 @@ class FileObject(object):
       return string
 
 
-class BaseRequest(object):
+class Request(object):
     """
     Represents the request from the server, and contains various information
-    and utilities. Also the place to store the session object.
+    and utilities.
     """
-    cookie_name = "sid"
-    """The name of the cookie"""
-
     def __init__(self, env):
         self.params = {}
         self.files = {}
         self._env = env
 
-        self._raw_url = env["PATH_INFO"]
         self.url = urlparse.urlparse(env["PATH_INFO"])
         """A `urlparse` result of the requests path"""
 
         self._parse_params()
-        self._parse_cookie()
-        self._parse_auth()
-        self.build_session()
-        self.build_cfg()
 
-        self.method = self._env["REQUEST_METHOD"].upper()
-        """The HTTP method by which the request was made, in all caps."""
-
-        self.remote = env["HTTP_X_REAL_IP"] if "HTTP_X_REAL_IP" in env else "Unknown IP"
-        """The clients IP, otherwise `Unknown IP`"""
-
-        self.user_agent = env["HTTP_USER_AGENT"] if "HTTP_USER_AGENT" in env else "Unknown User Agent"
-        """The user agent, unparsed, or the string `Unknown User Agent`"""
-
-        self.referer = env["HTTP_REFERER"] if "HTTP_REFERER" in env else ""
-        """The referal URL if it exists, otherwise an empty string."""
-
-        self.remote_accepts = []
-
-        if "HTTP_ACCEPT" in env:
-            r = env["HTTP_ACCEPT"].split(",")
-            for bit in r:
-                q = 1
-                b = bit.split(";")
-                if len(b) > 1:
-                    c = b[1].split("=")
-                    if len(c) > 1:
-                        q = float(c[1].strip(" "))
-                self.remote_accepts.append((b[0], q))
-
-        self.pre_id_url = None
-        self.id = None
-        self.command = None
-
-    def accepts(self, t):
-        """
-        Determines if the given mimetype is accepted by the client.
-        """
-        a = [ i for i in self.remote_accepts if t in i[0] ]
-        return len(a) > 0
-
-    def _post_route(self, extended):
-        if extended:
-            parts = extended.split('/', 1)
-            self.id = parts[0]
-            if len(parts) > 1:
-                self.command = parts[1]
-            else:
-                self.command = None
-
-        if self.id:
-            self.pre_id_url = self.url.path.split(self.id)[0].strip("/").split("/")
-        else:
-            self.pre_id_url = self.url.path.strip("/").split("/")
+        self.headers = Headers(env)
 
     def _parse_params(self):
         all_mem = {}
@@ -176,27 +119,6 @@ class BaseRequest(object):
 
         self.params = all_mem
         self.files = all_files
-
-    def _parse_cookie(self):
-        cookie = Cookie.SimpleCookie()
-        try:
-            cookie.load(self._env["HTTP_COOKIE"])
-            self.session_cookie = { value.key: value.value for key, value in cookie.iteritems() }
-            self.session_ID = self.session_cookie[self.cookie_name]
-
-        except Exception:
-            self.session_ID = str(uuid.uuid4())
-            self.session_cookie = {self.cookie_name: self.session_ID}
-
-    def _parse_auth(self):
-        if "HTTP_AUTHORIZATION" in self._env:
-            auth_parts = self._env["HTTP_AUTHORIZATION"].split(" ")
-            if len(auth_parts) > 1:
-                if auth_parts[0].lower() == "basic":
-                    name, passwd = base64.b64decode(auth_parts[1]).split(":")
-                    self.auth = {"username": name, "password": passwd}
-        else:
-            self.auth = None
 
     def get_param(self, parameter, default="", cast=str):
         """
@@ -243,36 +165,3 @@ class BaseRequest(object):
 
         else:
             return None
-
-    @property
-    def id_extended(self):
-        if self.command is None:
-            return str(self.id)
-
-        else:
-            return "/".join([self.id, self.command])
-
-    def build_session(self):
-        """
-        Called during the objects instantiation.
-        Override to set the requests `session` property.
-        """
-        pass
-
-    def build_cfg(self):
-        """
-        Called during the objects instantiation.
-        Override to set the requests `cfg` property.
-        """
-        pass
-
-    def log(self, head):
-        """
-        Called right at the end of the request when the response is being
-        returned to the client. This is useful for logging to a database or log
-        file.
-
-        :param head: The reponses :py:class:`.Head` object which was returned
-          to the client.
-        """
-        pass

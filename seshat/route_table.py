@@ -20,7 +20,7 @@ class RouteTable(object):
     def __init__(self):
         self._data = {}
 
-    def add_route(self, r_container):
+    def add(self, r_container):
         """
         Adds the given route container to the route table.
 

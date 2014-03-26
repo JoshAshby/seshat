@@ -20,7 +20,7 @@ import logging
 logger = logging.getLogger("seshat.route")
 
 
-def route():
+def route(r=None):
     """
     Class decorator that will take and generate a route table entry for the
     decorated controller class, based off of its name and its file hierarchy
@@ -51,11 +51,16 @@ def route():
     id will be stored in `self.request.id`
     """
     def wrapper(HTTPObject):
-        urlObject = AutoRouteContainer(HTTPObject)
+        if r is None:
+            urlObject = AutoRouteContainer(HTTPObject)
 
-        u.urls.add_route(urlObject)
-        logger.debug("""Auto generated route table entry for:
-        Object: %(objectName)s
-        Pattern: %(url)s""" % {"url": urlObject.url, "objectName": HTTPObject.__module__ + "/" + HTTPObject.__name__})
+            u.urls.add(urlObject)
+            logger.debug("""Auto generated route table entry for:
+            Object: %(objectName)s
+            Pattern: %(url)s""" % {"url": urlObject.url, "objectName": HTTPObject.__module__ + "/" + HTTPObject.__name__})
+
+        else:
+            pass # TODO: support custom routes with a custom route container..
+
         return HTTPObject
     return wrapper
