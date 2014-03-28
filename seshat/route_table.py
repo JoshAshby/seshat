@@ -23,16 +23,14 @@ class RouteTable(object):
         Adds the given route container to the route table.
 
         :param r_container: The route container which contains the url and controller for a route.
-        :type r_container: :py:class:`.RouteContainer`
+        :type r_container: :py:class:`.Route`
         """
         self.routes.append(container)
 
     def get(self, request):
         """
-        Attempts to find the closest match to the given url.
-        Its messy but it gets the job done. mostly well. not sure on
-        the amount of processing time it has or hasn't saved however,
-        but it doesn't use regex... :/
+        Attempts to find the closest match to the given url, through comparing
+        lots of regexs for a match against the url.
 
         :parsed_url: urlparse.ParseResult
         """

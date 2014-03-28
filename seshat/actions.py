@@ -6,8 +6,9 @@ Actions allow you to write code that looks like::
       def GET(self):
         return Redirect("/")
 
-This module provides a few common Action classes to use, along with a
-Action which can be inherited to create your own Actions.
+This module provides a few common Action classes to use, along with a base
+Action class which can be inherited to create your own Actions by overriding
+the __init__ function.
 """
 """
 For more information and licensing, see: https://github.com/JoshAshby/seshat
@@ -26,7 +27,7 @@ class Action(object):
     """
     Provides a base for creating a new object which represents an HTTP Status code.
 
-    All returned data is checked if it is of type `Action` and if so, the
+    All returned data is checked if it is of type :py:class:`.Action` and if so, the
     data/actions head is returned rather than the controllers head. This allows
     for a syntax like::
 
@@ -35,7 +36,8 @@ class Action(object):
     which will cause the controller to return a 404 status code.
 
     To create a new action, inherit this class then make a new `__init__(self, *kargs)`
-    which sets `self.head` to a :py:class:`.Head` object.
+    which sets `self.response` to a :py:class:`.Reponse` object (or just call
+    super), and adds any headers or status changes to that `.Response` object.
     """
     def __init__(self):
         self.response = Response()
@@ -80,6 +82,7 @@ class Redirect(Action):
        #     ###       ###
 ##############################################################################
 class BadRequest(Action):
+    """Returns a 400 BAD REQUEST"""
     def __init__(self):
         self.response = Response()
         self.response.status = 400
@@ -87,7 +90,10 @@ class BadRequest(Action):
 
 class Unauthorized(Action):
     """
-    Returns a 401 Unauthorized status code back to the client
+    Returns a 401 UNAUTHORIZED back to the client
+
+    This should probably also include a WWW-Authenticate header, but I'll leave
+    that for later right now.
     """
     def __init__(self):
         self.response = Response()
@@ -95,22 +101,26 @@ class Unauthorized(Action):
 
 
 class Forbidden(Action):
+    """Returns a 403 FORBIDDEN"""
     def __init__(self):
         self.response = Response()
         self.response.status = 403
 
 
 class NotFound(Action):
-    """
-    Returns a 404 Not Found code and the resulting 404 error controller to be
-    returned to the client.
-    """
+    """Returns a 404 Not Found"""
     def __init__(self):
         self.response = Response()
         self.response.status = 404
 
 
 class MethodNotAllowed(Action):
+    """
+    Returns a 405 METHOD NOT ALLOWED
+
+    :param allow: A `list` of allowable methods
+    :type allow: list
+    """
     def __init__(self, allow):
         self.response = Response()
         self.response.status = 405
@@ -132,6 +142,15 @@ class MethodNotAllowed(Action):
 ##############################################################################
 
 class InternalServerError(Action):
+    """
+    Returns a 500 INTERNAL SERVER ERROR
+
+    :param e: The Exception
+    :type e: Exception
+
+    :param tb: The traceback of the exception
+    :type tb: str
+    """
     def __init__(self, e=None, tb=None):
         self.response = Response()
         self.response.status = 500

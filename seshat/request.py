@@ -103,6 +103,11 @@ class Request(object):
         self._parse_params()
 
         self.headers = RequestHeaders(env)
+        """Headers which were sent with the request, in the form of a
+        `.RequestHeaders` object"""
+
+        self.url_params = None
+        """When a match is made in the route table, this is set to a `dict` containing the matched pattern groups in the url."""
 
     def _parse_params(self):
         all_mem = {}
@@ -171,3 +176,12 @@ class Request(object):
 
         else:
             return None
+
+    @property
+    def id(self):
+        """
+        This is more or less a backwards compatability thing. Provides access
+        to the `id` element of `url_params` `dict` if it is present otherwise
+        returns `None`
+        """
+        return self.url_params["id"] if "id" in self.url_params else None

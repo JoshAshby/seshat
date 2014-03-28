@@ -9,7 +9,7 @@ setup(
     packages=['seshat'],
     url='https://github.com/JoshAshby/seshat',
     license='GPL v3 (See LICENSE.txt for more info)',
-    description='Fairly opinionated pet web framework.',
+    description='Just a simple pet web framework.',
     long_description=open('README.rst').read(),
     install_requires=[
         "nose >= 1.3.0",

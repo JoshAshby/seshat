@@ -1,4 +1,4 @@
-Seshat Web Framework v1.0.0
+Seshat Web Framework v2.0.0
 ===========================
 
 Seshat is a toy web framework built by JoshAshby over the past few years. It's
@@ -16,7 +16,7 @@ Build status - Dev:
 
 
 .. image:: https://secure.travis-ci.org/JoshAshby/seshat.png?branch=dev
-        :target: http://travis-ci.org/JoshAshby/seshat
+        :target: http://travis-ci.org/JoshAshby/seshat?branch=dev
 
 
 Gittip if you like the work I do and would consider a small donation to help
@@ -54,19 +54,19 @@ Getting started is fairly easy, take a look at the included `example.py`::
     import seshat.dispatch as dispatch
 
     from seshat.route import route
-    from seshat.controller import BaseController
+    from seshat.controller import Controller
     from seshat.actions import NotFound
 
 
     @route()
-    class index(BaseController):
+    class index(Controller):
       def GET(self):
         name = self.request.get_param("name", "World!")
         return "Hello, " + name
 
 
     @route()
-    class wat(BaseController):
+    class wat(Controller):
       def GET(self):
         return Redirect("/?name=Wat")
 
@@ -97,10 +97,11 @@ Doc Contents
 
    controller
    route
-   head
    actions
    request
+   response
    dispatch
+   error_catcher
 
 
 Indices and tables

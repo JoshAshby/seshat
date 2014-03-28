@@ -15,14 +15,3 @@ def test_unauth():
     a = actions.Unauthorized()()
     assert a is not None
     assert a.status == "401 UNAUTHORIZED"
-
-
-#class CustomAction(actions.BaseAction):
-    #def __init__(self):
-        #self.head = Head("711 WAT")
-
-
-#def test_custom():
-    #a = CustomAction()
-    #assert a.head is not None
-    #assert a.head.status == "711 WAT"

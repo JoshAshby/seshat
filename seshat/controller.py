@@ -12,9 +12,10 @@ Basic use is like so::
       def GET(self):
         return "<h1>WAT</h1>"
 
-If you see something along the lines of 'Content Generating Request Method' it
-will usually mean ``GET()``, ``POST()``, or any other HTTP method verb which
-might be given to the controller.
+By default all controllers have HEAD and GET methods. HEAD simply calls GET but
+strips the reponse body. (HEAD is probably broken for now but I'll fix it
+eventually).
+
 """
 """
 For more information and licensing, see: https://github.com/JoshAshby/seshat
@@ -40,22 +41,17 @@ class Controller(object):
     The parent of all controllers which Seshat will serve.
 
     To use this to make a controller, override or add the request method (in
-    all caps) which will be called for this controller. Eg, with the
-    controller::
+    all caps) which will be called for this controller. Eg::
 
-        from seshat.controller import BaseController
+        from seshat.controller import Controller
 
         class index(Controller):
           def GET(self):
             return "<h1>WAT</h1>"
 
-    then all GET method requests to this controller will return with the text
-    `<h1>WAT</h1>` however all POST, PUT, DELETE calls will return as a blank
-    page, since those methods are not overridden.
-
-    .. note::
-
-        Support for `Not Supported` status codes may be added later, ironically.
+    then all GET based requests to this controller will return with the text
+    `<h1>WAT</h1>` however all POST, PUT, DELETE calls will a 405 Method Not
+    Supported error.
     """
     def __init__(self, request):
         self.request = request
@@ -91,6 +87,7 @@ class Controller(object):
 
           else:
               return actions.MethodNotSupported()()
+            # TODO: Add code to make this not crash
 
       except Exception as e:
           tb = str(traceback.format_exc())
@@ -100,25 +97,21 @@ class Controller(object):
 
     def pre_content_hook(self):
         """
-        Called before the generating request method is called and should return either
-        `None` or :py:class:`.Head` or :py:class:`.Action` object.
+        Called before the request method is called and should return either
+        `None` or :py:class:`.Action` object.
 
         If there is a returned value other than None, this will skip calling
-        the content generating request method and simply return directly to
-        dispatch.
+        the request method and simply return directly to dispatch, so make sure
+        it returns an `.Action`.
 
         A good example of the use for this hook would be for authentication.
-        You could for example, check the id set through the cookie and compare
-        it to a database entry. If the cookie is not currently in use (ie, user
-        not logged in, or similar) then you could do::
-
-            return Head("401")
-
-        or perhaps::
+        You could for example, check a parameter set through a cookie and
+        return something like a 401 Unauthorized if the param doesn't represent
+        a logged in user::
 
             return actions.Unauthorized()
 
-        :rtype: :py:class:`.Head` or :py:class:`.Action` or `None`
+        :rtype: :py:class:`.Action` or `None`
         """
         return None
 

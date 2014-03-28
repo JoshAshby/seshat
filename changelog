@@ -1,1 +1,35 @@
+2014/03/28
+This introduces v2 of seshat which is full of breaking changes.
+Primary things:
+	- Renaming of BaseController to Controller
+		- BaseRequest -> Request
+	- Addition of headers, RequestHeaders and ResponseHeaders
+			and several other header classes to be used within those.
+	- Addition of Response class which is what every controller has to return to
+			dispatch with now
+	- Moving of several fields around and condensing the route stuff
+	- Rewrite router to use regex and allows the route decorator now allows for
+			custom routes if need be with url structures like:
+				/user/:name/:email or something similar
+	- Request.id no longer exists, but Request.url_params will often have an id
+			field in it, or in the case of the above url: {"name": thing1, "email":
+			thing2}.
+	- Renamed Controller._build() to Controller.__call__()
+	- Rework how actions work behind the scenes
+Other new things:
+	- Moved error catching out of the route_table, and into error_catcher.
+	- Use of a lot of __call__ features across most objects.
+	- Hopefully better handling of unicode within everything (headers and such
+			are going to have problems however, until I get around to reading all the
+			specs)
+
+Things which will come later on:
+	- HTTP Digest handling.
+	- Cookie handling
+	- Session handling (ties in with cookies and will provide a hopefully simple
+			interface to get and set and save sessions)
+	- More better tests
+	- Better Docs (heh... yeah right)
+
+2014/01/18
 Packaged into first version

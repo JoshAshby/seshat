@@ -21,6 +21,10 @@ accept_re = re.compile(r',\s*([^\s;,\n]+)(?:[^,]*?;\s*q=([0-9.]*))?')
 
 
 def parse_cookie(env):
+    """
+    Parses the Cookie header into a `Cookie.SimpleCookie` object, or returns
+    an empty new instance.
+    """
     cookie = Cookie.SimpleCookie()
     if "HTTP_COOKIE" in env:
         try:
@@ -32,6 +36,10 @@ def parse_cookie(env):
 
 
 def parse_accept(s):
+    """
+    Parses an Accept header string and acts as an iterator, yielding a `tuple`
+    of `(name, quality)`
+    """
   # Again, thanks WebOB
     for match in accept_re.finditer(','+s):
         name = match.group(1)
@@ -58,6 +66,13 @@ def get_normal_name(val):
 
 
 class Authorization(object):
+    """
+    Basic little class to help represent an Authorization header. Currently
+    only supports HTTP Basic Auth but support for digest auth is slated for
+    later.
+
+    This class is mostly unfinished at this time.
+    """
     def __init__(self, auth_type, **kwargs):
         if auth_type.lower() == "basic":
             self._data = {"username": kwargs["username"],
@@ -106,7 +121,10 @@ class Accept(object):
 
 class RequestHeaders(object):
     """
-    A basic container for all the headers in an HTTP request.
+    A basic container for all the headers in an HTTP request. Acts like a
+    dictionary.
+
+    This class is mostly unfinished at this time.
     """
     def __init__(self, env):
         self._env = env
@@ -140,6 +158,12 @@ class RequestHeaders(object):
 
 
 class ResponseHeaders(object):
+    """
+    Represents the headers which will be sent back to the client with the
+    response. This acts a bit like an `list` of `tuples`.
+
+    This class is mostly unfinished as of now.
+    """
     def __init__(self):
         self._headers = []
 

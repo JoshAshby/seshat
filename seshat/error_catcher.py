@@ -58,6 +58,8 @@ class ErrorCatcher(object):
         if type(code) is str:
             code = int(code[:3])
 
+        req.errors = errors
+
         if self.codes_to_catch.get(code):
             newHTTPObject = self.codes_to_catch[code](req)
             res = newHTTPObject()

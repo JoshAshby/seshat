@@ -1,4 +1,4 @@
-Seshat Web Framework v1.0.0
+Seshat Web Framework v2.0.0
 ===========================
 
 Build status - Master:
@@ -12,7 +12,7 @@ Build status - Dev:
 
 
 .. image:: https://secure.travis-ci.org/JoshAshby/seshat.png?branch=dev
-        :target: http://travis-ci.org/JoshAshby/seshat
+        :target: http://travis-ci.org/JoshAshby/seshat?branch=dev
 
 
 A Few Minor Warnings

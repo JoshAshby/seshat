@@ -1,1 +1,2 @@
+v2.0.0, 2014/03/28 -- Breaking Changes. See Changelog for more info.
 v1.0.0, 2014/01/18 -- Initial release.
