@@ -6,9 +6,9 @@ be inherited from to create more advanced or custom controllers.
 
 Basic use is like so::
 
-    from seshat.controller import BaseController
+    from seshat.controller import Controller
 
-    class index(BaseController):
+    class index(Controller):
       def GET(self):
         return "<h1>WAT</h1>"
 
@@ -30,6 +30,7 @@ import traceback
 import actions
 import logging
 from response import Response
+from headers import ResponseHeaders
 
 logger = logging.getLogger("seshat.controller")
 
@@ -44,7 +45,7 @@ class Controller(object):
 
         from seshat.controller import BaseController
 
-        class index(BaseController):
+        class index(Controller):
           def GET(self):
             return "<h1>WAT</h1>"
 
@@ -59,6 +60,7 @@ class Controller(object):
     def __init__(self, request):
         self.request = request
         self.post_init_hook()
+        self.headers = ResponseHeaders()
 
     def post_init_hook(self):
         """
@@ -71,34 +73,35 @@ class Controller(object):
         pass
 
     def __call__(self):
-      content = None
       try:
           c = self.pre_content_hook()
           if c is not None:
-              if isinstance(c, actions.BaseAction):
-                  return c
+              if isinstance(c, actions.Action):
+                  return c()
 
           if hasattr(self, self.request.method):
-              content = getattr(self, self.request.method)()
-              if isinstance(content, actions.BaseAction):
-                  return content
+              c = getattr(self, self.request.method)()
 
-              self.post_content_hook(content)
+              if isinstance(c, actions.Action):
+                  return c()
+
+              self.post_content_hook(c)
+
+              return Response(200, self.headers, c)
+
           else:
-              return actions.MethodNotSupported()
+              return actions.MethodNotSupported()()
 
       except Exception as e:
           tb = str(traceback.format_exc())
           logger.exception(e)
           logger.error(tb)
-          self.req.error = (e, tb)
-
-      return content
+          return actions.InternalServerError(e, tb)()
 
     def pre_content_hook(self):
         """
         Called before the generating request method is called and should return either
-        `None` or :py:class:`.Head` or :py:class:`.BaseAction` object.
+        `None` or :py:class:`.Head` or :py:class:`.Action` object.
 
         If there is a returned value other than None, this will skip calling
         the content generating request method and simply return directly to
@@ -115,7 +118,7 @@ class Controller(object):
 
             return actions.Unauthorized()
 
-        :rtype: :py:class:`.Head` or :py:class:`.BaseAction` or `None`
+        :rtype: :py:class:`.Head` or :py:class:`.Action` or `None`
         """
         return None
 

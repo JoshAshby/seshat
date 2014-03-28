@@ -46,35 +46,34 @@ def dispatch(env, start_response):
         serve(dispatch)
 
     """
-    req = request_obj(env)
     newHTTPObject = None
 
-    found = route_table.get(req)
+    req = request_obj(env)
+    log_request(req)
 
+    found = route_table.get(req)
     if found is not None:
-        #obj = found.__module__+"/"+found.__name__
+        log_controller(req, found)
         newHTTPObject = found(req)
         yield reply(newHTTPObject, req, start_response)
 
     else:
         res = error_catcher.error(404, req)
         start_response(res.status, res.headers)
-        return [res.body.encode("utf-8")]
+        yield res.body.encode("utf-8")
 
 
 def reply(newHTTPObject, req, start_response):
     newHTTPObj = greenlet(newHTTPObject)
     res = newHTTPObj.switch()
-
-    check = error_catcher(res, req)
-    if check:
-        res = check
+    res = error_catcher(res, req) or res
 
     res.headers.append("content-length", len(res))
 
-    start_response(res.status, res.headers)
+    log_response(req, res)
 
-    return [res.body.encode("utf-8")]
+    start_response(res.status, res.headers)
+    return res.body.encode("utf-8")
 
 
 def log_request(req):
@@ -86,21 +85,20 @@ def log_request(req):
     IP: %s
     UA: %s
     R: %s
-    """ % (req.method, req.url.path, req.params, req.files, req.remote, req.user_agent, req.referer))
+    """ % (req.method, req.url.path, req.params, req.files, req.remote, req.headers.user_agent, req.headers.referer))
 
 
-def log_obj(req, obj):
+def log_controller(req, obj):
     logger.debug("""\n\r------- Processing ------------------
     Method: %s
     URL: %s
     Object: %s
-    """ % (req.method, req.url.path, obj))
+    """ % (req.method, req.url.path, obj.__module__+"/"+obj.__name__))
 
 
-def log_response(req, head):
-    errors = ", ".join([ str(e) for e in head.errors ])
+def log_response(req, res):
     logger.debug("""\n\r--------- Response ---------------------
     URL: %s
     Status: %s
     Error: %s
-    """ % (req.url.path, head.status, errors))
+    """ % (req.url.path, res.status, res.errors))

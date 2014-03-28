@@ -47,25 +47,27 @@ class ErrorCatcher(object):
         :param req: A `.Request` object
         """
         if self.check(res):
-            return self.error(res.status, req)
+            return self.error(res.status, req, errors=res.errors)
 
         return None
 
     def check(self, res):
-        return res.status[:3] in self.codes_to_catch.keys()
+        return int(res.status[:3]) in self.codes_to_catch.keys()
 
-    def error(self, code, req):
+    def error(self, code, req, errors=None):
         if type(code) is str:
             code = int(code[:3])
 
         if self.codes_to_catch.get(code):
             newHTTPObject = self.codes_to_catch[code](req)
-            return newHTTPObject()
+            res = newHTTPObject()
 
         else:
             res = Response("Error {}".format(code))
             res.status = code
-            return res
+
+        res.errors = errors
+        return res
 
 
 catcher = ErrorCatcher()

@@ -104,20 +104,18 @@ class Accept(object):
             return None
 
 
-class Headers(object):
+class RequestHeaders(object):
     """
     A basic container for all the headers in an HTTP request.
     """
     def __init__(self, env):
         self._env = env
-        self.method = env["REQUEST_METHOD"].upper()
-        """The HTTP method by which the request was made, in all caps."""
 
-        self.remote = env["HTTP_X_REAL_IP"] if "HTTP_X_REAL_IP" in env else "Unknown IP"
-        """The clients IP, otherwise `Unknown IP`"""
+        self.referer = None
+        self.user_agent = None
 
         for key in env:
-            if key not in ["HTTP_X_REAL_IP"]:
+            if key not in ["HTTP_X_REAL_IP"] and key.startswith("HTTP_"):
                 name = get_normal_name(key)
                 val = env[key]
                 if "Accept" in name:
@@ -132,7 +130,7 @@ class Headers(object):
                 setattr(self, name, val)
 
         # TODO: Parse this into something nice
-        if not self.user_agent:
+        if not hasattr(self, "user_agent"):
             self.user_agent = "Unknown User Agent"
         """The user agent, unparsed, or the string `Unknown User Agent`"""
 
@@ -140,3 +138,26 @@ class Headers(object):
         name = get_header_name(val)
         return self._env.get(name, None)
 
+
+class ResponseHeaders(object):
+    def __init__(self):
+        self._headers = []
+
+    def append(self, key, val):
+        key = key.title()
+        self._headers.append((key, val))
+
+    def __add__(self, val):
+        assert isinstance(val, tuple)
+        self._headers.append(val)
+
+    def __contains__(self, val):
+        for header in self._headers:
+            if val in header:
+                return True
+
+        return False
+
+    def __iter__(self):
+        for header in self._headers:
+            yield header

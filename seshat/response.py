@@ -12,7 +12,7 @@ Josh Ashby
 http://joshashby.com
 joshuaashby@joshashby.com
 """
-from headers import Headers
+from headers import ResponseHeaders
 
 
 # Thanks werkzeug
@@ -84,10 +84,11 @@ def get_status_code_str(num):
 
 
 class Response(object):
-    def __init__(self, status_code=200, headers=Headers(), body=None):
+    def __init__(self, status_code=200, headers=None, body=None):
         self.status = status_code
-        self.headers = headers
-        self.body = body
+        self.headers = headers or ResponseHeaders()
+        self.body = body or ""
+        self.errors = None
 
     def __len__(self):
         return len(self.body)

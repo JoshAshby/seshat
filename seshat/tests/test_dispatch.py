@@ -1,22 +1,21 @@
 import seshat.dispatch as dispatch
-from seshat.route import route
-import seshat.route_containers as route_containers
-from seshat.controller import BaseController
+import seshat.route as route
+from seshat.controller import Controller
 
 import os
 from webob import Request
 
-route_containers.controller_folder = os.path.relpath(__file__).rsplit("/", 1)[0]
+route.controller_folder = os.path.relpath(__file__).rsplit("/", 1)[0]
 
 
-@route()
-class index(BaseController):
+@route.route()
+class index(Controller):
   def GET(self):
     return "hi"
 
 
-@route()
-class failure(BaseController):
+@route.route()
+class failure(Controller):
   def GET(self):
     raise Exception("This is an error")
 
@@ -31,12 +30,10 @@ def test_route_index():
 def test_404():
   req = Request.blank("/star-trek")
   res = req.get_response(dispatch.dispatch)
-  assert res.body == "Error 404 NOT FOUND"
   assert res.status == "404 NOT FOUND"
 
 
 def test_500():
   req = Request.blank("/failure")
   res = req.get_response(dispatch.dispatch)
-  assert res.body == "Error 500 INTERNAL SERVER ERROR"
   assert res.status == "500 INTERNAL SERVER ERROR"

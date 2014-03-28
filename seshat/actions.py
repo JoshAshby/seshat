@@ -2,19 +2,12 @@
 """
 Actions allow you to write code that looks like::
 
-    class RandomController(BaseController):
+    class RandomController(Controller):
       def GET(self):
         return Redirect("/")
 
-which I think looks a lot nicer than::
-
-    class RandomController(BaseController):
-      def GET(self):
-        self.head.status = "303 SEE OTHER"
-        self.head.append("location", "/")
-
 This module provides a few common Action classes to use, along with a
-BaseAction which can be inherited to create your own Actions.
+Action which can be inherited to create your own Actions.
 """
 """
 For more information and licensing, see: https://github.com/JoshAshby/seshat
@@ -26,14 +19,14 @@ Josh Ashby
 http://joshashby.com
 joshuaashby@joshashby.com
 """
-from head import Head
+from response import Response
 
 
-class BaseAction(object):
+class Action(object):
     """
     Provides a base for creating a new object which represents an HTTP Status code.
 
-    All returned data is checked if it is of type `BaseAction` and if so, the
+    All returned data is checked if it is of type `Action` and if so, the
     data/actions head is returned rather than the controllers head. This allows
     for a syntax like::
 
@@ -44,18 +37,10 @@ class BaseAction(object):
     To create a new action, inherit this class then make a new `__init__(self, *kargs)`
     which sets `self.head` to a :py:class:`.Head` object.
     """
-    head = None
-    def __len__(self):
-        return 0
+    def __init__(self):
+        self.response = Response()
 
-    def __str__(self):
-        return ""
-
-    def __unicode__(self):
-        return ""
-
-    def encode(self, val):
-        return str(self).encode(val)
+    def __call__(self): return self.response
 
 
 ##############################################################################
@@ -69,7 +54,7 @@ class BaseAction(object):
        #   ##   ##   ##   ##
   ######     ###       ###
 ##############################################################################
-class Redirect(BaseAction):
+class Redirect(Action):
     """
     Returns a 303 See Other status code along with a `location` header back
     to the client.
@@ -78,8 +63,9 @@ class Redirect(BaseAction):
     :type loc: str
     """
     def __init__(self, loc):
-        self.head = Head("303 SEE OTHER")
-        self.head.add_header("Location", loc)
+        self.response = Response()
+        self.response.status = 303
+        self.response.headers.append("Location", loc)
 
 
 ##############################################################################
@@ -93,36 +79,60 @@ class Redirect(BaseAction):
        #   ##   ##   ##   ##
        #     ###       ###
 ##############################################################################
-class BadRequest(BaseAction):
+class BadRequest(Action):
     def __init__(self):
-        self.head = Head("400 BAD REQUEST")
+        self.response = Response()
+        self.response.status = 400
 
 
-class Unauthorized(BaseAction):
+class Unauthorized(Action):
     """
     Returns a 401 Unauthorized status code back to the client
     """
     def __init__(self):
-        self.head = Head("401 UNAUTHORIZED")
+        self.response = Response()
+        self.response.status = 401
 
 
-class Forbidden(BaseAction):
+class Forbidden(Action):
     def __init__(self):
-        self.head = Head("403 FORBIDDEN")
+        self.response = Response()
+        self.response.status = 403
 
 
-class NotFound(BaseAction):
+class NotFound(Action):
     """
     Returns a 404 Not Found code and the resulting 404 error controller to be
     returned to the client.
     """
     def __init__(self):
-        self.head = Head("404 NOT FOUND")
+        self.response = Response()
+        self.response.status = 404
 
 
-class MethodNotAllowed(BaseAction):
+class MethodNotAllowed(Action):
     def __init__(self, allow):
+        self.response = Response()
+        self.response.status = 405
         assert type(allow) is list
         a = ", ".join(allow).upper()
-        al = [("Allow", a)]
-        self.head = Head("405 METHOD NOT ALLOWED", al)
+        self.response.headers.append("Allow", a)
+
+
+##############################################################################
+   #####     ###       ###
+       #   ##   ##   ##   ##
+       #   ##   ##   ##   ##
+       #   ##   ##   ##   ##
+    ####   ##   ##   ##   ##
+   #       ##   ##   ##   ##
+  #        ##   ##   ##   ##
+   #       ##   ##   ##   ##
+    ####     ###       ###
+##############################################################################
+
+class InternalServerError(Action):
+    def __init__(self, e=None, tb=None):
+        self.response = Response()
+        self.response.status = 500
+        self.response.errors = (e, tb)

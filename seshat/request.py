@@ -22,7 +22,7 @@ logger = logging.getLogger("seshat.request")
 import cgi
 import tempfile
 import urlparse
-from headers import Headers
+from headers import RequestHeaders
 
 
 def parse_bool(p):
@@ -94,9 +94,15 @@ class Request(object):
         self.url = urlparse.urlparse(env["PATH_INFO"])
         """A `urlparse` result of the requests path"""
 
+        self.method = env["REQUEST_METHOD"].upper() or "GET"
+        """The HTTP method by which the request was made, in all caps."""
+
+        self.remote = env["HTTP_X_REAL_IP"] if "HTTP_X_REAL_IP" in env else "Unknown IP"
+        """The clients IP, otherwise `Unknown IP`"""
+
         self._parse_params()
 
-        self.headers = Headers(env)
+        self.headers = RequestHeaders(env)
 
     def _parse_params(self):
         all_mem = {}
