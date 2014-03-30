@@ -8,7 +8,7 @@ Actions allow you to write code that looks like::
 
 This module provides a few common Action classes to use, along with a base
 Action class which can be inherited to create your own Actions by overriding
-the __init__ function.
+the `__init__` function.
 """
 """
 For more information and licensing, see: https://github.com/JoshAshby/seshat
@@ -37,7 +37,7 @@ class Action(object):
 
     To create a new action, inherit this class then make a new `__init__(self, *kargs)`
     which sets `self.response` to a :py:class:`.Reponse` object (or just call
-    super), and adds any headers or status changes to that `.Response` object.
+    super), and adds any headers or status changes to that :py:class:`.Response` object.
     """
     def __init__(self):
         self.response = Response()

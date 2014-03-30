@@ -32,7 +32,9 @@ class RouteTable(object):
         Attempts to find the closest match to the given url, through comparing
         lots of regexs for a match against the url.
 
-        :parsed_url: urlparse.ParseResult
+        :param request: The requested url
+        :type request: `urlparse.ParseResult`
+        :return: :py:class:`.Controller` or `None`
         """
         parsed_url = request.url
         obj = None

@@ -98,7 +98,9 @@ class Request(object):
         """The HTTP method by which the request was made, in all caps."""
 
         self.remote = env["HTTP_X_REAL_IP"] if "HTTP_X_REAL_IP" in env else "Unknown IP"
-        """The clients IP, otherwise `Unknown IP`"""
+        """The clients IP, otherwise `Unknown IP` This is set from
+        HTTP_X_REAL_IP which is a header that I personally have nginx append to
+        the request before handing it to Seshat."""
 
         self._parse_params()
 

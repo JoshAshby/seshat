@@ -62,7 +62,7 @@ class Controller(object):
         """
         Called at the end of `__init__` this allows you to customize the
         creation process of your controller, without having to override
-        `__init__ itself`.
+        `__init__` itself.
 
         This should accept nothing and return nothing.
         """
@@ -102,7 +102,7 @@ class Controller(object):
 
         If there is a returned value other than None, this will skip calling
         the request method and simply return directly to dispatch, so make sure
-        it returns an `.Action`.
+        it returns an :py:class:`.Action`.
 
         A good example of the use for this hook would be for authentication.
         You could for example, check a parameter set through a cookie and

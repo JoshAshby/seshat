@@ -35,24 +35,6 @@ def parse_cookie(env):
     return cookie
 
 
-def parse_accept(s):
-    """
-    Parses an Accept header string and acts as an iterator, yielding a `tuple`
-    of `(name, quality)`
-    """
-  # Again, thanks WebOB
-    for match in accept_re.finditer(','+s):
-        name = match.group(1)
-        if name == 'q':
-            continue
-        quality = match.group(2)
-        try:
-            quality = max(min(float(quality), 1), 0) if quality else 1
-            yield name, quality
-
-        except ValueError:
-            pass
-
 def get_header_name(val):
     val = val.upper().replace("-", "_")
     return "_".join(["HTTP", val])
@@ -81,19 +63,15 @@ class Authorization(object):
             pass #TODO
 
     @classmethod
-    def parse(cls, env):
-        if "HTTP_AUTHORIZATION" in env:
-            auth_parts = env["HTTP_AUTHORIZATION"].split(" ")
-            if len(auth_parts) > 1:
-                if auth_parts[0].lower() == "basic":
-                    name, passwd = base64.b64decode(auth_parts[1]).split(":")
-                    auth = cls("basic", username=name, password=passwd)
+    def parse(cls, s):
+        auth_parts = s.split(" ")
+        if len(auth_parts) > 1:
+            if auth_parts[0].lower() == "basic":
+                name, passwd = base64.b64decode(auth_parts[1]).split(":")
+                auth = cls("basic", username=name, password=passwd)
 
-                elif auth_parts[0].lower() == "digest":
-                    pass #TODO: This. Maybe you should learn about HTTP digest auth...
-
-        else:
-            auth = None
+            elif auth_parts[0].lower() == "digest":
+                pass #TODO: This. Maybe you should learn about HTTP digest auth...
 
         return auth
 
@@ -104,7 +82,18 @@ class Accept(object):
     commonly take on the form of: type/subtype; q=int
     """
     def __init__(self, s):
-        self._data = { name: quality for name, quality in parse_accept(s) }
+      # Again, thanks WebOB
+        for match in accept_re.finditer(','+s):
+            name = match.group(1)
+            if name == 'q':
+                continue
+            quality = match.group(2)
+            try:
+                quality = max(min(float(quality), 1), 0) if quality else 1
+                self._data[name] = quality
+
+            except ValueError:
+                pass
 
     def __contains__(self, val):
         if not "*/*" in self._data:
@@ -112,7 +101,29 @@ class Accept(object):
 
         return True
 
+    def best(self, l):
+        """
+        Determines which item in the provided list is the best match.
+
+        If no match is found then it'll return `None`
+
+        :param l: A list of strings which are various accept types.
+        :type l: `list`
+        """
+        b = (None, 0)
+        for i in l:
+            if i in self:
+                q = self._data[i]
+                if q > b[1]:
+                    b = (i, q)
+
+        return b[0]
+
     def quality(self, item):
+        """
+        Returns the quality of the given accept item, if it exists in the
+        accept header, otherwise it will return `None`.
+        """
         if item in self:
             return self._data.get(item, None)
         else:
@@ -129,32 +140,76 @@ class RequestHeaders(object):
     def __init__(self, env):
         self._env = env
 
-        self.referer = None
-        self.user_agent = None
+        #for key in env:
+            #if key not in ["HTTP_X_REAL_IP"] and key.startswith("HTTP_"):
+                #name = get_normal_name(key)
+                #val = env[key]
+                #if "Accept" in name:
+                    #val = Accept(val)
 
-        for key in env:
-            if key not in ["HTTP_X_REAL_IP"] and key.startswith("HTTP_"):
-                name = get_normal_name(key)
-                val = env[key]
-                if "Accept" in name:
-                    val = Accept(val)
+                #elif "Cookie" in name:
+                    #val = parse_cookie(val)
 
-                elif "Cookie" in name:
-                    val = parse_cookie(val)
+                #elif "Authorization" in name:
+                    #val = Authorization(val)
 
-                elif "Authorization" in name:
-                    val = Authorization(val)
+                #setattr(self, name, val)
 
-                setattr(self, name, val)
+    def get(self, val):
+        if not val.startswith("HTTP_"):
+            val = get_header_name(val)
 
-        # TODO: Parse this into something nice
-        if not hasattr(self, "user_agent"):
-            self.user_agent = "Unknown User Agent"
-        """The user agent, unparsed, or the string `Unknown User Agent`"""
+        return self._env.get(val, None)
 
     def __getitem__(self, val):
-        name = get_header_name(val)
-        return self._env.get(name, None)
+        if not val.startswith("HTTP_"):
+            val = get_header_name(val)
+
+        return self._env[val]
+
+    def __contains__(self, val):
+        if not val.startswith("HTTP_"):
+            val = get_header_name(val)
+
+        return val in self._env
+
+    @property
+    def referer(self):
+        """
+        The referrer address which this request originated from.
+        If no referrer is present this will return `None`
+        """
+        return self.get("referer") or self.get("referrer")
+
+    @property
+    def user_agent(self):
+        """
+        The user agent, unparsed, or the string `Unknown User Agent`
+
+        .. note:: This will probably change to a parsed result class later on.
+        """
+        return self.get("user-agent") or "Unknown User Agent"
+
+    @property
+    def authorization(self):
+        """
+        Returns an :py:class:`.Authorization` instance if there is an Authorization
+        header in the request. Otherwise this returns `None`
+        """
+        val = get_header_name("Authorization")
+
+        if val in self:
+            return Authorization(self[val])
+
+        return None
+
+    cookies = None
+
+    accept = None
+    accept_charset = None
+    accept_encoding = None
+    accept_language = None
+    accept_datetime = None
 
 
 class ResponseHeaders(object):

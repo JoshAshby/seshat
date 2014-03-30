@@ -2,9 +2,7 @@
 """
 Dispatch is the actual WSGI app which is served. This module also contains
 several configuration properties, along with easy access to the apps route
-table though `route_table`. Documentation on the route table can be found
-below: :py:class:`.RouteTable`
-
+table (:py:class:`.RouteTable`) though `route_table`.
 
 .. note::
 
@@ -31,8 +29,8 @@ from request import Request
 logger = logging.getLogger("seshat.dispatch")
 
 request_obj = Request
-"""The object which should be used to create a new Request item from. Should
-inherit from BaseRequest"""
+"""The object which should be used to create a new :py:class:`.Request` item from. Should
+inherit from :py:class:`.Request`"""
 
 
 def dispatch(env, start_response):

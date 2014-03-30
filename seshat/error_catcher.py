@@ -46,12 +46,15 @@ class ErrorCatcher(object):
         :param res: A `.Response` object
         :param req: A `.Request` object
         """
-        if self.check(res):
+        if res in self:
             return self.error(res.status, req, errors=res.errors)
 
         return None
 
     def check(self, res):
+        return int(res.status[:3]) in self.codes_to_catch.keys()
+
+    def __contains__(self, res):
         return int(res.status[:3]) in self.codes_to_catch.keys()
 
     def error(self, code, req, errors=None):
