@@ -25,12 +25,18 @@ import logging
 from error_catcher import catcher as error_catcher
 from route_table import urls as route_table
 from request import Request
+from session import Session
 
 logger = logging.getLogger("seshat.dispatch")
 
 request_obj = Request
-"""The object which should be used to create a new :py:class:`.Request` item from. Should
-inherit from :py:class:`.Request`"""
+"""The class which should be used to create a new :py:class:`.Request` object from.
+Should inherit from :py:class:`.Request`"""
+
+
+session_obj = Session
+"""The class which should be used to instantiate a new session object which
+will be handed to the controller. Should at least inherit from :py:class:`.Session`"""
 
 
 def dispatch(env, start_response):
@@ -47,31 +53,34 @@ def dispatch(env, start_response):
     newHTTPObject = None
 
     req = request_obj(env)
+    ses = session_obj(req)
+
     log_request(req)
 
     found = route_table.get(req)
     if found is not None:
         log_controller(req, found)
-        newHTTPObject = found(req)
-        yield reply(newHTTPObject, req, start_response)
 
-    else:
-        res = error_catcher.error(404, req)
+        newHTTPObject = found(request=req, session=ses)
+        newHTTPObject = greenlet(newHTTPObject)
+
+        res = newHTTPObject.switch()
+        res = error_catcher(res, req, ses) or res
+
+        ses.save()
+
+        res.headers.append("content-length", len(res))
+
+        log_response(req, res)
+
         start_response(res.status, res.headers)
         yield res.body.encode("utf-8")
 
+    else:
+        res = error_catcher.error(404, req, ses)
 
-def reply(newHTTPObject, req, start_response):
-    newHTTPObj = greenlet(newHTTPObject)
-    res = newHTTPObj.switch()
-    res = error_catcher(res, req) or res
-
-    res.headers.append("content-length", len(res))
-
-    log_response(req, res)
-
-    start_response(res.status, res.headers)
-    return res.body.encode("utf-8")
+        start_response(res.status, res.headers)
+        yield res.body.encode("utf-8")
 
 
 def log_request(req):

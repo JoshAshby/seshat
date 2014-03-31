@@ -16,6 +16,7 @@ from headers import ResponseHeaders
 
 
 # Thanks werkzeug
+# Shamefully taken from https://github.com/mitsuhiko/werkzeug/blob/master/werkzeug/http.py#L63
 lookup_codes = {
     100: 'Continue',
     101: 'Switching Protocols',

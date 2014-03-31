@@ -31,6 +31,7 @@ import traceback
 import actions
 import logging
 from response import Response
+from request import Request
 from headers import ResponseHeaders
 
 logger = logging.getLogger("seshat.controller")
@@ -53,10 +54,11 @@ class Controller(object):
     `<h1>WAT</h1>` however all POST, PUT, DELETE calls will a 405 Method Not
     Supported error.
     """
-    def __init__(self, request):
-        self.request = request
+    def __init__(self, request=None, session=None):
+        self.request = request or Request()
         self.post_init_hook()
         self.headers = ResponseHeaders()
+        self.session = session
 
     def post_init_hook(self):
         """
@@ -80,6 +82,9 @@ class Controller(object):
 
               if isinstance(c, actions.Action):
                   return c()
+
+              if isinstance(c, Response):
+                  return c
 
               self.post_content_hook(c)
 

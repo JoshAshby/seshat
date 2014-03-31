@@ -15,24 +15,8 @@ import Cookie
 import base64
 import re
 
-
 # Thanks WebOB for this regex
 accept_re = re.compile(r',\s*([^\s;,\n]+)(?:[^,]*?;\s*q=([0-9.]*))?')
-
-
-def parse_cookie(env):
-    """
-    Parses the Cookie header into a `Cookie.SimpleCookie` object, or returns
-    an empty new instance.
-    """
-    cookie = Cookie.SimpleCookie()
-    if "HTTP_COOKIE" in env:
-        try:
-            cookie.load(env["HTTP_COOKIE"])
-        except cookie.CookieError:
-            pass
-
-    return cookie
 
 
 def get_header_name(val):
@@ -45,6 +29,22 @@ def get_normal_name(val):
         val = val[5:]
 
     return val.replace("_", "-").title()
+
+
+def parse_cookie(self, env):
+    """
+    Parses the Cookie header into a `Cookie.SimpleCookie` object, or returns
+    an empty new instance.
+
+    :return: `Cookie.SimpleCookie`
+    """
+    cookie = Cookie.SimpleCookie()
+    try:
+        cookie.load(s)
+    except cookie.CookieError:
+        pass
+
+    return cookie
 
 
 class Authorization(object):
@@ -74,6 +74,14 @@ class Authorization(object):
                 pass #TODO: This. Maybe you should learn about HTTP digest auth...
 
         return auth
+
+    @property
+    def username(self):
+        return self._data["username"]
+
+    @property
+    def password(self):
+        return self._data["password"]
 
 
 class Accept(object):
@@ -134,44 +142,27 @@ class RequestHeaders(object):
     """
     A basic container for all the headers in an HTTP request. Acts like a
     dictionary.
-
-    This class is mostly unfinished at this time.
     """
-    def __init__(self, env):
-        self._env = env
+    def __init__(self, env=None):
+        self.env = env or {}
 
-        #for key in env:
-            #if key not in ["HTTP_X_REAL_IP"] and key.startswith("HTTP_"):
-                #name = get_normal_name(key)
-                #val = env[key]
-                #if "Accept" in name:
-                    #val = Accept(val)
-
-                #elif "Cookie" in name:
-                    #val = parse_cookie(val)
-
-                #elif "Authorization" in name:
-                    #val = Authorization(val)
-
-                #setattr(self, name, val)
-
-    def get(self, val):
+    def get(self, val, default=None):
         if not val.startswith("HTTP_"):
             val = get_header_name(val)
 
-        return self._env.get(val, None)
+        return self.env.get(val, default)
 
     def __getitem__(self, val):
         if not val.startswith("HTTP_"):
             val = get_header_name(val)
 
-        return self._env[val]
+        return self.env[val]
 
     def __contains__(self, val):
         if not val.startswith("HTTP_"):
             val = get_header_name(val)
 
-        return val in self._env
+        return val in self.env
 
     @property
     def referer(self):
@@ -203,13 +194,50 @@ class RequestHeaders(object):
 
         return None
 
-    cookies = None
+    @property
+    def cookie(self):
+        val = get_header_name("Cookie")
 
-    accept = None
-    accept_charset = None
-    accept_encoding = None
-    accept_language = None
-    accept_datetime = None
+        if val in self:
+            return parse_cookie(self[val])
+
+        return None
+
+    @property
+    def accept(self):
+        val = get_header_name("Accept")
+
+        if val in self:
+            return Accept(self[val])
+
+        return None
+
+    @property
+    def accept_charset(self):
+        val = get_header_name("Accept-Charset")
+
+        if val in self:
+            return Accept(self[val])
+
+        return None
+
+    @property
+    def accept_encoding(self):
+        val = get_header_name("Accept-Encoding")
+
+        if val in self:
+            return Accept(self[val])
+
+        return None
+
+    @property
+    def accept_language(self):
+        val = get_header_name("Accept-Language")
+
+        if val in self:
+            return Accept(self[val])
+
+        return None
 
 
 class ResponseHeaders(object):

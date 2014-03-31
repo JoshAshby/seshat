@@ -41,13 +41,13 @@ class ErrorCatcher(object):
         """
         self.codes_to_catch[code[:3]] = controller
 
-    def __call__(self, res, req):
+    def __call__(self, res, req, ses):
         """
         :param res: A `.Response` object
         :param req: A `.Request` object
         """
         if res in self:
-            return self.error(res.status, req, errors=res.errors)
+            return self.error(res.status, req, ses, errors=res.errors)
 
         return None
 
@@ -57,14 +57,14 @@ class ErrorCatcher(object):
     def __contains__(self, res):
         return int(res.status[:3]) in self.codes_to_catch.keys()
 
-    def error(self, code, req, errors=None):
+    def error(self, code, req, ses, errors=None):
         if type(code) is str:
             code = int(code[:3])
 
         req.errors = errors
 
         if self.codes_to_catch.get(code):
-            newHTTPObject = self.codes_to_catch[code](req)
+            newHTTPObject = self.codes_to_catch[code](req, ses)
             res = newHTTPObject()
 
         else:

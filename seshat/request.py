@@ -89,12 +89,15 @@ class Request(object):
     def __init__(self, env):
         self.params = {}
         self.files = {}
-        self._env = env
 
-        self.url = urlparse.urlparse(env["PATH_INFO"])
+        self.env = env
+        """The raw environ `dict` which is provided by the wsgi server."""
+
+        url = env["PATH_INFO"] if "PATH_INFO" in env else ""
+        self.url = urlparse.urlparse(url)
         """A `urlparse` result of the requests path"""
 
-        self.method = env["REQUEST_METHOD"].upper() or "GET"
+        self.method = env["REQUEST_METHOD"].upper() if "REQUEST_METHOD" in env else"GET"
         """The HTTP method by which the request was made, in all caps."""
 
         self.remote = env["HTTP_X_REAL_IP"] if "HTTP_X_REAL_IP" in env else "Unknown IP"
@@ -115,23 +118,24 @@ class Request(object):
         all_mem = {}
         all_files = {}
 
-        temp_file = tempfile.TemporaryFile()
-        temp_file.write(self._env['wsgi.input'].read()) # or use buffered read()
-        temp_file.seek(0)
-        form = cgi.FieldStorage(fp=temp_file, environ=self._env, keep_blank_values=True)
+        if "wsgi.input" in self.env:
+            temp_file = tempfile.TemporaryFile()
+            temp_file.write(self.env['wsgi.input'].read()) # or use buffered read()
+            temp_file.seek(0)
+            form = cgi.FieldStorage(fp=temp_file, environ=self.env, keep_blank_values=True)
 
-        if isinstance(form.value, list):
-            for bit in form:
-                if hasattr(form[bit], "filename") and form[bit].filename is not None:
-                    fi = FileObject(form[bit])
-                    all_files[fi.name] = fi
-                else:
-                    all_mem[bit] = form.getvalue(bit)
+            if isinstance(form.value, list):
+                for bit in form:
+                    if hasattr(form[bit], "filename") and form[bit].filename is not None:
+                        fi = FileObject(form[bit])
+                        all_files[fi.name] = fi
+                    else:
+                        all_mem[bit] = form.getvalue(bit)
 
-        temp_file.close()
+            temp_file.close()
 
-        self.params = all_mem
-        self.files = all_files
+            self.params = all_mem
+            self.files = all_files
 
     def get_param(self, parameter, default="", cast=str):
         """
