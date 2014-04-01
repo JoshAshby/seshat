@@ -31,9 +31,15 @@ def test_404():
   req = Request.blank("/star-trek")
   res = req.get_response(dispatch.dispatch)
   assert res.status == "404 NOT FOUND"
+  req = Request.blank("/star-trek/")
+  res = req.get_response(dispatch.dispatch)
+  assert res.status == "404 NOT FOUND"
 
 
 def test_500():
   req = Request.blank("/failure")
+  res = req.get_response(dispatch.dispatch)
+  assert res.status == "500 INTERNAL SERVER ERROR"
+  req = Request.blank("/failure/")
   res = req.get_response(dispatch.dispatch)
   assert res.status == "500 INTERNAL SERVER ERROR"

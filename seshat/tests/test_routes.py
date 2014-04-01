@@ -14,6 +14,37 @@ class index(Controller):
   def GET(self):
     return "hi"
 
+
+@route.route()
+class users(Controller):
+  def GET(self):
+    return ""
+
+
+@route.route("/users/:id")
+class view_users(Controller):
+    def GET(self):
+        return "Hia"
+
+
 def test_route_table_index():
     req = request.Request({"PATH_INFO": "/"})
     assert route_table.get(req) is index
+
+
+def test_route_table_users():
+    req = request.Request({"PATH_INFO": "/users"})
+    a = route_table.get(req)
+    assert a is users
+    req = request.Request({"PATH_INFO": "/users/"})
+    a = route_table.get(req)
+    assert a is users
+
+
+def test_custom_route():
+    req = request.Request({"PATH_INFO": "/users/Josh"})
+    a = route_table.get(req)
+    assert a is view_users
+    req = request.Request({"PATH_INFO": "/users/Josh/"})
+    a = route_table.get(req)
+    assert a is view_users

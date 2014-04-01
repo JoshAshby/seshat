@@ -28,8 +28,9 @@ generation uses folder hierarchy, this setting allows to you to have
 controllers in a single folder but not have that folder end up as the route
 prefix."""
 
-group_name_regex = re.compile(r"(?:\:([^/]+))")
-replacement = r"(?P<\1>[^/]+)?"
+opt_group_name_regex = re.compile(r"(?:/\:([^/\s]+))")
+opt_replacement = r"/(?P<\1>[^/\s]+)"
+
 
 
 class Route(object):
@@ -63,12 +64,13 @@ class Route(object):
 
     @route.setter
     def route(self, val):
-        repl = group_name_regex.sub(replacement, val)
+        repl = opt_group_name_regex.sub(opt_replacement, val)
         repl = "^{}(?:/)?$".format(repl)
         self._route = re.compile(repl, flags=re.I)
 
     def match(self, url):
         res = self.route.search(url.path)
+        print res, url.path, self.route.pattern, res.groupdict() if res else None
         if res:
             return res.groupdict()
 
@@ -140,16 +142,30 @@ def route(r=None):
 
             if name == "index":
                 route = route.rstrip("/")
-                if not route: route = "/"
+                if not route:
+                    route = "/"
+
+            elif name == "view":
+                if route != "/":
+                    route += "/:id"
+
+                else:
+                    route += name + "/:id"
+
             else:
-                route += name + ":id"
+                route += name
+
+            route = re.sub("/{2,}", "/", route) # Make sure we don't have extra //'s
 
             logger.debug("""Auto generated route table entry for:
             Object: %(objectName)s
             Pattern: %(url)s""" % {"url": route, "objectName": HTTPObject.__module__ + "/" + HTTPObject.__name__})
 
-        route = Route(controller=HTTPObject, route=route)
-        u.urls.add(route)
+            route = Route(controller=HTTPObject, route=route)
+            u.urls.add(route)
+        else:
+            route = Route(controller=HTTPObject, route=r)
+            u.urls.add(route)
 
         return HTTPObject
     return wrapper
