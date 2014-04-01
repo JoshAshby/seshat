@@ -27,6 +27,12 @@ class view_users(Controller):
         return "Hia"
 
 
+@route.route("/users/:id/:email_settings")
+class two_param_route(Controller):
+    def GET(self):
+        return "This is email?"
+
+
 def test_route_table_index():
     req = request.Request({"PATH_INFO": "/"})
     assert route_table.get(req) is index
@@ -48,3 +54,16 @@ def test_custom_route():
     req = request.Request({"PATH_INFO": "/users/Josh/"})
     a = route_table.get(req)
     assert a is view_users
+
+
+def test_two_param_route():
+    req = request.Request({"PATH_INFO": "/users/Josh/true"})
+    a = route_table.get(req)
+    assert a is two_param_route
+    req = request.Request({"PATH_INFO": "/users/Josh/true/"})
+    a = route_table.get(req)
+    assert a is two_param_route
+
+
+def test_route_table_repr():
+    route_table.__repr__()

@@ -29,8 +29,11 @@ controllers in a single folder but not have that folder end up as the route
 prefix."""
 
 opt_group_name_regex = re.compile(r"(?:/\:([^/\s]+))")
+# Capture items that look like /:id
+# This is used for a search and replace using the below opt_replacement
+# which replaces them with functioning regex expressions to capture the
+# correct named groups.
 opt_replacement = r"/(?P<\1>[^/\s]+)"
-
 
 
 class Route(object):
@@ -70,7 +73,6 @@ class Route(object):
 
     def match(self, url):
         res = self.route.search(url.path)
-        print res, url.path, self.route.pattern, res.groupdict() if res else None
         if res:
             return res.groupdict()
 
