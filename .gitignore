@@ -37,6 +37,9 @@ app/config/initial.yaml
 
 docs/_build
 
+cover
+.coverage
+
 # Compiled source #
 ###################
 *.a
