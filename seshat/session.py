@@ -24,5 +24,5 @@ class Session(object):
     def load(self):
         pass
 
-    def save(self):
+    def save(self, response):
         pass

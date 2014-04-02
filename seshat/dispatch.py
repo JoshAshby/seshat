@@ -67,7 +67,7 @@ def dispatch(env, start_response):
         res = newHTTPObject.switch()
         res = error_catcher(res, req, ses) or res
 
-        ses.save()
+        ses.save(res)
 
         res.headers.append("content-length", len(res))
 

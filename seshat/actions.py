@@ -21,6 +21,7 @@ http://joshashby.com
 joshuaashby@joshashby.com
 """
 from response import Response
+from collections import namedtuple
 
 
 class Action(object):
@@ -154,4 +155,4 @@ class InternalServerError(Action):
     def __init__(self, e=None, tb=None):
         self.response = Response()
         self.response.status = 500
-        self.response.errors = (e, tb)
+        self.response.errors = namedtuple("Error", ["exception", "traceback"])(e, tb)

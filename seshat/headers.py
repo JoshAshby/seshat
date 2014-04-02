@@ -31,7 +31,7 @@ def get_normal_name(val):
     return val.replace("_", "-").title()
 
 
-def parse_cookie(self, env):
+def parse_cookie(s):
     """
     Parses the Cookie header into a `Cookie.SimpleCookie` object, or returns
     an empty new instance.
@@ -146,6 +146,40 @@ class RequestHeaders(object):
     def __init__(self, env=None):
         self.env = env or {}
 
+        self.referer = self.referrer = self.get("referer") or self.get("referrer")
+        """
+        The referrer address which this request originated from.
+        If no referrer is present this will return `None`
+        """
+        self.user_agent = self.get("user-agent") or "Unknown User Agent"
+        """
+        The user agent, unparsed, or the string `Unknown User Agent`
+
+        .. note:: This will probably change to a parsed result class later on.
+        """
+
+        val = get_header_name("Authorization")
+        self.authorization = Authorization(self[val]) if val in self else None
+        """
+        Returns an :py:class:`.Authorization` instance if there is an Authorization
+        header in the request. Otherwise this returns `None`
+        """
+
+        val = get_header_name("Cookie")
+        self.cookie = parse_cookie(self[val] if val in self else "")
+
+        val = get_header_name("Accept")
+        self.accept = Accept(self[val]) if val in self else None
+
+        val = get_header_name("Accept-Charset")
+        self.accept_charset = Accept(self[val]) if val in self else None
+
+        val = get_header_name("Accept-Encoding")
+        self.accept_encoding = Accept(self[val]) if val in self else None
+
+        val = get_header_name("Accept-Language")
+        self.accept_language = Accept(self[val]) if val in self else None
+
     def get(self, val, default=None):
         if not val.startswith("HTTP_"):
             val = get_header_name(val)
@@ -163,81 +197,6 @@ class RequestHeaders(object):
             val = get_header_name(val)
 
         return val in self.env
-
-    @property
-    def referer(self):
-        """
-        The referrer address which this request originated from.
-        If no referrer is present this will return `None`
-        """
-        return self.get("referer") or self.get("referrer")
-
-    @property
-    def user_agent(self):
-        """
-        The user agent, unparsed, or the string `Unknown User Agent`
-
-        .. note:: This will probably change to a parsed result class later on.
-        """
-        return self.get("user-agent") or "Unknown User Agent"
-
-    @property
-    def authorization(self):
-        """
-        Returns an :py:class:`.Authorization` instance if there is an Authorization
-        header in the request. Otherwise this returns `None`
-        """
-        val = get_header_name("Authorization")
-
-        if val in self:
-            return Authorization(self[val])
-
-        return None
-
-    @property
-    def cookie(self):
-        val = get_header_name("Cookie")
-
-        if val in self:
-            return parse_cookie(self[val])
-
-        return None
-
-    @property
-    def accept(self):
-        val = get_header_name("Accept")
-
-        if val in self:
-            return Accept(self[val])
-
-        return None
-
-    @property
-    def accept_charset(self):
-        val = get_header_name("Accept-Charset")
-
-        if val in self:
-            return Accept(self[val])
-
-        return None
-
-    @property
-    def accept_encoding(self):
-        val = get_header_name("Accept-Encoding")
-
-        if val in self:
-            return Accept(self[val])
-
-        return None
-
-    @property
-    def accept_language(self):
-        val = get_header_name("Accept-Language")
-
-        if val in self:
-            return Accept(self[val])
-
-        return None
 
 
 class ResponseHeaders(object):

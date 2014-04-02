@@ -99,6 +99,7 @@ Doc Contents
    route
    actions
    request
+   session
    response
    dispatch
    error_catcher
