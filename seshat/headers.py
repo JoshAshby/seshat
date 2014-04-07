@@ -74,6 +74,7 @@ class Accept(object):
     commonly take on the form of: type/subtype; q=int
     """
     def __init__(self, s):
+        self._data = {}
       # Again, thanks WebOB
         for match in accept_re.finditer(','+s):
             name = match.group(1)

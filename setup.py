@@ -14,6 +14,7 @@ setup(
     install_requires=[
         "nose >= 1.3.0",
         "greenlet==0.4.2",
-        "wsgiref==0.1.2"
+        "wsgiref==0.1.2",
+        "cookies==2.0.0"
     ],
 )
