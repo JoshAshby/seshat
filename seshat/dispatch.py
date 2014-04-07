@@ -69,7 +69,7 @@ def dispatch(env, start_response):
 
         ses.save(res)
 
-        res.headers.append("content-length", len(res))
+        res.headers.append("content-length", str(len(res)))
 
         log_response(req, res)
 
