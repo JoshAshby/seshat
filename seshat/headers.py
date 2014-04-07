@@ -11,7 +11,7 @@ Josh Ashby
 http://joshashby.com
 joshuaashby@joshashby.com
 """
-import Cookie
+from cookies import Cookie, Cookies
 import base64
 import re
 
@@ -29,22 +29,6 @@ def get_normal_name(val):
         val = val[5:]
 
     return val.replace("_", "-").title()
-
-
-def parse_cookie(s):
-    """
-    Parses the Cookie header into a `Cookie.SimpleCookie` object, or returns
-    an empty new instance.
-
-    :return: `Cookie.SimpleCookie`
-    """
-    cookie = Cookie.SimpleCookie()
-    try:
-        cookie.load(s)
-    except cookie.CookieError:
-        pass
-
-    return cookie
 
 
 class Authorization(object):
@@ -166,7 +150,10 @@ class RequestHeaders(object):
         """
 
         val = get_header_name("Cookie")
-        self.cookie = parse_cookie(self[val] if val in self else "")
+        if val in self:
+            self.cookies = Cookies.from_request(self[val])
+        else:
+            self.cookies = Cookies()
 
         val = get_header_name("Accept")
         self.accept = Accept(self[val]) if val in self else None
