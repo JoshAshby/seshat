@@ -39,12 +39,16 @@ class ErrorCatcher(object):
         :param controller: The controller class which will be used to respond
           to this code
         """
-        self.codes_to_catch[code[:3]] = controller
+        if isinstance(code, str):
+            code = int(code[:3])
+        assert type(code) is int
+        self.codes_to_catch[code] = controller
 
     def __call__(self, res, req, ses):
         """
         :param res: A `.Response` object
         :param req: A `.Request` object
+        :param sess: A `.Session` object
         """
         if res in self:
             return self.error(res.status, req, ses, errors=res.errors)
@@ -60,6 +64,8 @@ class ErrorCatcher(object):
     def error(self, code, req, ses, errors=None):
         if type(code) is str:
             code = int(code[:3])
+
+        assert type(code) is int
 
         req.errors = errors
 
