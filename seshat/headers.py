@@ -195,11 +195,12 @@ class ResponseHeaders(object):
     This class is mostly unfinished as of now.
     """
     def __init__(self, headers=None):
+        print headers
         self._headers = headers or []
 
     def append(self, key, val):
         key = key.title()
-        self._headers.append((key, val))
+        self._headers.append(tuple([key, val]))
 
     def __add__(self, val):
         assert isinstance(val, tuple)
