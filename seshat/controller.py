@@ -60,6 +60,11 @@ class Controller(object):
         self.headers = ResponseHeaders()
         self.session = session
 
+        self.finish_init()
+
+    def finish_init(self):
+        pass
+
     def post_init_hook(self):
         """
         Called at the end of `__init__` this allows you to customize the
