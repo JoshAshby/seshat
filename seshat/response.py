@@ -87,7 +87,7 @@ def get_status_code_str(num):
 class Response(object):
     def __init__(self, status_code=200, headers=None, body=None):
         self.status = status_code
-        self.headers = headers or ResponseHeaders()
+        self.headers = ResponseHeaders(headers)
         self.body = body or ""
         self.errors = None
 
