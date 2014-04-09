@@ -194,7 +194,7 @@ class ResponseHeaders(object):
 
     This class is mostly unfinished as of now.
     """
-    def __init__(self, headers):
+    def __init__(self, headers=None):
         self._headers = headers or []
 
     def append(self, key, val):
