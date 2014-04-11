@@ -199,7 +199,7 @@ class ResponseHeaders(object):
 
     def append(self, key, val):
         key = key.title()
-        self._headers.append(tuple([key, val]))
+        self._headers.append(tuple([str(key), str(val)]))
 
     def __add__(self, val):
         assert isinstance(val, tuple)
