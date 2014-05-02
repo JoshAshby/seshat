@@ -68,8 +68,11 @@ class Route(object):
 
     @subdomain.setter
     def subdomain(self, val):
-        repl = "({}.*)".format(val)
-        self._subdomain = re.compile(repl, flags=re.I)
+        if val:
+            repl = "({}.*)".format(val)
+            self._subdomain = re.compile(repl, flags=re.I)
+        else:
+            self._subdomain = None
 
     @property
     def route(self):
@@ -176,11 +179,21 @@ def route(r=None, s=None):
 
             logger.debug("""Auto generated route table entry for:
             Object: %(objectName)s
-            Pattern: %(url)s""" % {"url": route, "objectName": HTTPObject.__module__ + "/" + HTTPObject.__name__})
+            Pattern: %(url)s
+            Host: %(host)s""" % {"url": route,
+                "objectName": HTTPObject.__module__ + "/" + HTTPObject.__name__,
+                "host": s})
 
             route = Route(controller=HTTPObject, route=route, subdomain=s)
             u.urls.add(route)
         else:
+            logger.debug("""Manual route table entry for:
+            Object: %(objectName)s
+            Pattern: %(url)s
+            Host: %(host)s""" % {"url": r,
+                "objectName": HTTPObject.__module__ + "/" + HTTPObject.__name__,
+                "host": s})
+
             route = Route(controller=HTTPObject, route=r, subdomain=s)
             u.urls.add(route)
 

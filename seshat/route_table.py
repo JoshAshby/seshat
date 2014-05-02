@@ -45,6 +45,9 @@ class RouteTable(object):
                 obj = container.controller
                 request.url_params = res
 
+                if not container.controller.__name__ == "view":
+                    break
+
         return obj
 
     def __repr__(self):
