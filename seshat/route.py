@@ -49,17 +49,27 @@ class Route(object):
     :type: :py:class:`.Controller`
     """
 
-    def __init__(self, controller=None, route=None):
+    def __init__(self, controller=None, route=None, subdomain=None):
         """
         TODO: Finish this doc
 
-        :param url: The url pattern to use where url paramters are denoted by colons like: :name
-        :type url: str
+        :param route: The url pattern to use where url paramters are denoted by colons like: :name
+        :type route: str
         :param controller:
         :type controller: :py:class:`.Controller`
         """
         self.controller = controller
         self.route = route
+        self.subdomain = subdomain
+
+    @property
+    def subdomain(self):
+        return self._subdomain
+
+    @subdomain.setter
+    def subdomain(self, val):
+        repl = "({}.*)".format(val)
+        self._subdomain = re.compile(repl, flags=re.I)
 
     @property
     def route(self):
@@ -72,6 +82,11 @@ class Route(object):
         self._route = re.compile(repl, flags=re.I)
 
     def match(self, url):
+        if self.subdomain:
+            sub = self.subdomain.search(url.host)
+            if not sub:
+                return None
+
         res = self.route.search(url.path)
         if res:
             return res.groupdict()
@@ -80,7 +95,7 @@ class Route(object):
         return "< Route Url: " + self.route.pattern + " Controller: " + self.controller.__module__ + "/" + self.controller.__name__ + " >"
 
 
-def route(r=None):
+def route(r=None, s=None):
     """
     Class decorator that will take and generate a route table entry for the
     decorated :py:class:`.Controller` class, based off of its name and its file
@@ -163,10 +178,10 @@ def route(r=None):
             Object: %(objectName)s
             Pattern: %(url)s""" % {"url": route, "objectName": HTTPObject.__module__ + "/" + HTTPObject.__name__})
 
-            route = Route(controller=HTTPObject, route=route)
+            route = Route(controller=HTTPObject, route=route, subdomain=s)
             u.urls.add(route)
         else:
-            route = Route(controller=HTTPObject, route=r)
+            route = Route(controller=HTTPObject, route=r, subdomain=s)
             u.urls.add(route)
 
         return HTTPObject

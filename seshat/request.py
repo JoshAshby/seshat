@@ -95,9 +95,10 @@ class Request(object):
 
         url = env["PATH_INFO"] if "PATH_INFO" in env else ""
         self.url = urlparse.urlparse(url)
+        self.url.host = env["HTTP_HOST"] if "HTTP_HOST" in env else ""
         """A `urlparse` result of the requests path"""
 
-        self.method = env["REQUEST_METHOD"].upper() if "REQUEST_METHOD" in env else"GET"
+        self.method = env["REQUEST_METHOD"].upper() if "REQUEST_METHOD" in env else "GET"
         """The HTTP method by which the request was made, in all caps."""
 
         self.remote = env["HTTP_X_REAL_IP"] if "HTTP_X_REAL_IP" in env else "Unknown IP"
