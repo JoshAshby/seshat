@@ -86,13 +86,21 @@ def dispatch(env, start_response):
 def log_request(req):
     logger.debug("""\n\r------- Request ---------------------
     Method: %s
+    HOST: %s
     URL: %s
     PARAMS: %s
     FILES: %s
     IP: %s
     UA: %s
     R: %s
-    """ % (req.method, req.url.path, req.params, req.files, req.remote, req.headers.user_agent, req.headers.referer))
+    """ % (req.method,
+        req.url.host,
+        req.url.path,
+        req.params,
+        req.files,
+        req.remote,
+        req.headers.user_agent,
+        req.headers.referer))
 
 
 def log_controller(req, obj):
@@ -100,7 +108,9 @@ def log_controller(req, obj):
     Method: %s
     URL: %s
     Object: %s
-    """ % (req.method, req.url.path, obj.__module__+"/"+obj.__name__))
+    """ % (req.method,
+        req.url.path,
+        obj.__module__+"/"+obj.__name__))
 
 
 def log_response(req, res):
@@ -108,4 +118,6 @@ def log_response(req, res):
     URL: %s
     Status: %s
     Error: %s
-    """ % (req.url.path, res.status, res.errors))
+    """ % (req.url.path,
+        res.status,
+        res.errors))

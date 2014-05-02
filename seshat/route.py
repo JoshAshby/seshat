@@ -82,9 +82,9 @@ class Route(object):
         self._route = re.compile(repl, flags=re.I)
 
     def match(self, url):
-        if self.subdomain:
+        if self.subdomain is not None:
             sub = self.subdomain.search(url.host)
-            if not sub:
+            if sub is None:
                 return None
 
         res = self.route.search(url.path)
@@ -92,7 +92,7 @@ class Route(object):
             return res.groupdict()
 
     def __repr__(self):
-        return "< Route Url: " + self.route.pattern + " Controller: " + self.controller.__module__ + "/" + self.controller.__name__ + " >"
+        return "< Route Host: "+self.subdomain.pattern + " Url: " + self.route.pattern + " Controller: " + self.controller.__module__ + "/" + self.controller.__name__ + " >"
 
 
 def route(r=None, s=None):
