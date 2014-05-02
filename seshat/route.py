@@ -95,7 +95,8 @@ class Route(object):
             return res.groupdict()
 
     def __repr__(self):
-        return "< Route Host: "+self.subdomain.pattern + " Url: " + self.route.pattern + " Controller: " + self.controller.__module__ + "/" + self.controller.__name__ + " >"
+        sub = self.subdomain.pattern if self.subdomain else ""
+        return "< Route Host: "+sub + " Url: " + self.route.pattern + " Controller: " + self.controller.__module__ + "/" + self.controller.__name__ + " >"
 
 
 def route(r=None, s=None):
