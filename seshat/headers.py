@@ -144,7 +144,7 @@ class RequestHeaders(object):
         """
 
         val = get_header_name("Authorization")
-        self.authorization = Authorization(self[val]) if val in self else None
+        self.authorization = Authorization.parse(self[val]) if val in self else None
         """
         Returns an :py:class:`.Authorization` instance if there is an Authorization
         header in the request. Otherwise this returns `None`
